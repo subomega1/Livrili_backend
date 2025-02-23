@@ -14,7 +14,8 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@DiscriminatorValue("DELIVERY_PERSON")
+//@DiscriminatorValue("DELIVERY_PERSON")
+@Table(name = "delivery_persons")
 @EqualsAndHashCode(callSuper = true)
 public class DeliveryPerson extends User {
 

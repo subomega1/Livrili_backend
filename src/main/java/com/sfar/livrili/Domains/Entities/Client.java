@@ -12,7 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@DiscriminatorValue("CLIENT")
+//@DiscriminatorValue("CLIENT")
+@Table(name = "clients")
 @EqualsAndHashCode(callSuper = true)
 
 public class Client  extends User{

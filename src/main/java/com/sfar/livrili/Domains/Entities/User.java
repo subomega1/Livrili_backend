@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+//@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
 
 
 public class User {
