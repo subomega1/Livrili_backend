@@ -36,7 +36,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()
-                .requestMatchers(HttpMethod.POST,"/api/auth/signUp").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/auth/signUp").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/auth/logout").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/auth/testAuth").hasAuthority("DELIVERY_PERSON")
+                                .requestMatchers(HttpMethod.POST,"/api/packs").hasAuthority("CLIENT")
 
                 .anyRequest().authenticated()
                 )

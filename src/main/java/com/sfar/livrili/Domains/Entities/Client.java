@@ -1,5 +1,6 @@
 package com.sfar.livrili.Domains.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class Client  extends User{
     private String address;
 
     @OneToMany(mappedBy = "client" ,cascade = CascadeType.ALL , orphanRemoval = true)
+    @JsonManagedReference // This is the "forward" reference
+
     private List<Pack> packList = new ArrayList<>();
 
 

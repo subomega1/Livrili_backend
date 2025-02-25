@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +47,12 @@ public class AuthController {
                .build();
        return new ResponseEntity<>(authResponseDto, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/testAuth")
+    public ResponseEntity<String> testAuth() {
+
+        return ResponseEntity.ok("Hello World");
     }
 
 

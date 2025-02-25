@@ -2,10 +2,6 @@ package com.sfar.livrili.Domains.Dto;
 
 import com.sfar.livrili.Domains.Entities.Gender;
 import com.sfar.livrili.Domains.Entities.Role;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

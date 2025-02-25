@@ -1,7 +1,5 @@
 package com.sfar.livrili.Service.Impl;
 
-import com.sfar.livrili.Domains.Entities.User;
-import com.sfar.livrili.Repositories.UserRepository;
 import com.sfar.livrili.Service.AuthenticationService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +24,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private final UserRepository userRepository;
     private final UserDetailsService userDetailsService;
     private final AuthenticationManager authenticationManager;
 
@@ -35,7 +33,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final long  jwtExpirationTime = 86400000L;
 
     @Override
-    public UserDetails authenticate(String email, String password) {
+    public UserDetails authenticate(String email, String password)  throws BadCredentialsException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         return  userDetailsService.loadUserByUsername(email);
     }

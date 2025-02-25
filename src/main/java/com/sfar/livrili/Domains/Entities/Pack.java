@@ -1,6 +1,7 @@
 package com.sfar.livrili.Domains.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,6 +45,7 @@ public class Pack {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false ,name = "client_id")
+    @JsonBackReference // This is the "back" reference
     private Client client;
 
     @OneToMany(mappedBy = "pack",cascade = CascadeType.ALL , orphanRemoval = true)
