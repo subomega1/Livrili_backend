@@ -2,12 +2,14 @@ package com.sfar.livrili.Service;
 
 
 import com.sfar.livrili.Domains.Dto.PackRequestDto;
+import com.sfar.livrili.Domains.Dto.PackResponseDto;
 import com.sfar.livrili.Domains.Entities.Pack;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface PackService {
 
-    public Pack CreatePackForClient(UUID userId , PackRequestDto pack);
-
+     Pack CreatePackForClient(UUID userId , PackRequestDto pack);
+     List<PackResponseDto> GetAllPacks(UUID userId);
 }

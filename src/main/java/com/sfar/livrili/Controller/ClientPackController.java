@@ -1,15 +1,14 @@
 package com.sfar.livrili.Controller;
 
 import com.sfar.livrili.Domains.Dto.PackRequestDto;
+import com.sfar.livrili.Domains.Dto.PackResponseDto;
 import com.sfar.livrili.Domains.Entities.Pack;
 import com.sfar.livrili.Service.PackService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,5 +25,10 @@ public class ClientPackController {
 
 
 
+    }
+    @GetMapping
+    public List<PackResponseDto> getAllPacks(HttpServletRequest httpServletRequest) {
+        UUID uuid = (UUID) httpServletRequest.getAttribute("userId");
+        return packService.GetAllPacks(uuid);
     }
 }

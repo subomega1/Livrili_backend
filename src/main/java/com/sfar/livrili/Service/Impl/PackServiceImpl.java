@@ -1,19 +1,18 @@
 package com.sfar.livrili.Service.Impl;
 
 import com.sfar.livrili.Domains.Dto.PackRequestDto;
+import com.sfar.livrili.Domains.Dto.PackResponseDto;
 import com.sfar.livrili.Domains.Entities.Client;
 import com.sfar.livrili.Domains.Entities.Pack;
 import com.sfar.livrili.Domains.Entities.PackageStatus;
-import com.sfar.livrili.Domains.Entities.User;
 import com.sfar.livrili.Repositories.ClientRepository;
-import com.sfar.livrili.Repositories.PackageRepository;
-import com.sfar.livrili.Repositories.UserRepository;
+import com.sfar.livrili.Repositories.PackRepository;
 import com.sfar.livrili.Service.PackService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PackServiceImpl implements PackService {
     private final ClientRepository clientRepository;
-    private final PackageRepository packageRepository;
+    private final PackRepository packRepository;
     @Override
     public Pack CreatePackForClient(UUID userId, PackRequestDto packRequest) {
 
@@ -38,11 +37,28 @@ public class PackServiceImpl implements PackService {
                 .status(PackageStatus.PENDING)
                 .build();
 
-        Pack savedPack = packageRepository.save(newPack);
+        Pack savedPack = packRepository.save(newPack);
 
-        return newPack;
+        return savedPack;
 
 
 
+    }
+
+
+    @Override
+    public List<PackResponseDto> GetAllPacks(UUID userId) {
+        if (userId == null || !clientRepository.existsById(userId)){
+            throw new IllegalArgumentException("Client not found");
+        }
+        List<Pack> packs = packRepository.findAllByClientId(userId);
+       return packs.stream().map(pack -> PackResponseDto.builder()
+               .id(pack.getId())
+               .description(pack.getDescription())
+               .weight(pack.getWeight())
+               .pickUpLocation(pack.getPickUpLocation())
+               .dropOffLocation(pack.getDropOffLocation())
+               .status(pack.getStatus())
+               .build()).toList();
     }
 }
