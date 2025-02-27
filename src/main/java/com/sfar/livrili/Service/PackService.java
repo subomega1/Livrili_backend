@@ -12,4 +12,5 @@ public interface PackService {
 
      Pack CreatePackForClient(UUID userId , PackRequestDto pack);
      List<PackResponseDto> GetAllPacks(UUID userId);
+     PackResponseDto modifyPack(UUID userId, PackRequestDto pack, UUID packId);
 }

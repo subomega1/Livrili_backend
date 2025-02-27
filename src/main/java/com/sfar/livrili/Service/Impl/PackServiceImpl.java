@@ -61,4 +61,40 @@ public class PackServiceImpl implements PackService {
                .status(pack.getStatus())
                .build()).toList();
     }
+
+    @Override
+    public PackResponseDto modifyPack(UUID userId, PackRequestDto updatedPack,UUID packId) {
+        if (!clientRepository.existsById(userId)){
+            throw new IllegalArgumentException("Client not found");
+        }
+        Pack oldPack = packRepository.findByClientIdAndId(userId, packId).orElseThrow(()-> new IllegalArgumentException("Pack not found"));
+        if (oldPack.getStatus().equals(PackageStatus.PENDING)){
+            if (updatedPack.getDescription() != null) {
+                oldPack.setDescription(updatedPack.getDescription());
+            }
+            if (updatedPack.getWeight() != null) {
+                oldPack.setWeight(updatedPack.getWeight());
+            }
+            if (updatedPack.getPickUpLocation() != null) {
+                oldPack.setPickUpLocation(updatedPack.getPickUpLocation());
+            }
+            if (updatedPack.getDropOffLocation() != null) {
+                oldPack.setDropOffLocation(updatedPack.getDropOffLocation());
+            }
+            Pack savedPack = packRepository.save(oldPack);
+            return  PackResponseDto.builder()
+                    .id(savedPack.getId())
+                    .description(oldPack.getDescription())
+                    .weight(oldPack.getWeight())
+                    .pickUpLocation(oldPack.getPickUpLocation())
+                    .dropOffLocation(oldPack.getDropOffLocation())
+                    .status(oldPack.getStatus())
+                    .build();
+
+        }
+        else {
+            throw new IllegalStateException("Pack cannot be modified while having offers");
+        }
+
+    }
 }
