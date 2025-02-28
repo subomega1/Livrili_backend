@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +66,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                .getBody();
        return claims.getSubject();
     }
+    @Override
+    public boolean isExpiredToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(getSecretKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return claims.getExpiration().before(new java.util.Date());
+        } catch (Exception e) {
+            return true; // Consider token as expired if an exception occurs
+        }
+
+
+    }
+
     public String extractRole(String token) {
         Claims claims = Jwts.parser().setSigningKey(getSecretKey()).build().parseClaimsJws(token).getBody();
         return claims.get("role", String.class);

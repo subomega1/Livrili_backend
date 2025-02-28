@@ -39,11 +39,17 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST,"/api/auth/signUp").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/auth/logout").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/auth/testAuth").hasAuthority("DELIVERY_PERSON")
-                                .requestMatchers(HttpMethod.POST,"/api/packs").hasAuthority("CLIENT")
-                                .requestMatchers(HttpMethod.GET,"/api/packs").hasAuthority("CLIENT")
+                                .requestMatchers(HttpMethod.POST,"/api/client/packs").hasAuthority("CLIENT")
+                                .requestMatchers(HttpMethod.GET,"/api/client/packs").hasAuthority("CLIENT")
+                                .requestMatchers(HttpMethod.PUT,"/api/client/packs/**").hasAuthority("CLIENT")
+                                .requestMatchers(HttpMethod.DELETE,"/api/client/packs/**").hasAuthority("CLIENT")
+                                .requestMatchers(HttpMethod.GET,"/api/DG/pack/**").hasAuthority("DELIVERY_PERSON")
 
 
-                .anyRequest().authenticated()
+
+
+
+                        .anyRequest().authenticated()
                 )
 
                 .csrf(AbstractHttpConfigurer::disable)

@@ -7,7 +7,7 @@ import com.sfar.livrili.Domains.Entities.Pack;
 import com.sfar.livrili.Domains.Entities.PackageStatus;
 import com.sfar.livrili.Repositories.ClientRepository;
 import com.sfar.livrili.Repositories.PackRepository;
-import com.sfar.livrili.Service.PackService;
+import com.sfar.livrili.Service.ClientPackService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class PackServiceImpl implements PackService {
+public class ClientPackServiceImpl implements ClientPackService {
     private final ClientRepository clientRepository;
     private final PackRepository packRepository;
     @Override
@@ -95,6 +95,26 @@ public class PackServiceImpl implements PackService {
         else {
             throw new IllegalStateException("Pack cannot be modified while having offers");
         }
+
+    }
+
+    @Override
+    public void deletePack(UUID userId, UUID packId) {
+        if (!clientRepository.existsById(userId)){
+            throw new IllegalArgumentException("Client not found");
+        }
+        String packStatus = packRepository.findPackStatusByClientIdAndPackId(userId, packId).orElseThrow(()-> new IllegalArgumentException("Pack not found"));
+        if (packStatus.equals(PackageStatus.PENDING.name()) || packStatus.equals(PackageStatus.OFFERED.name())){
+            try {
+                packRepository.deleteByClientIdAndId(userId, packId);
+            }catch (Exception e){
+                throw new IllegalArgumentException("Pack cannot be deleted");
+            }
+        }else {
+            throw new IllegalStateException("Pack cannot be deleted because it's status");
+        }
+
+
 
     }
 }
