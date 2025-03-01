@@ -2,6 +2,7 @@ package com.sfar.livrili.Domains.Entities;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -49,6 +50,7 @@ public class Pack {
     private Client client;
 
     @OneToMany(mappedBy = "pack",cascade = CascadeType.ALL , orphanRemoval = true)
+    @JsonBackReference
     private List<Offer> offers = new ArrayList<>();
 
 

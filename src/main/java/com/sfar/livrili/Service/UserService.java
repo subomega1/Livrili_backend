@@ -6,7 +6,7 @@ import com.sfar.livrili.Domains.Entities.User;
 
 public interface UserService {
 
-    UserDto addUser(UserDtoRequest user);
+    String addUser(UserDtoRequest user);
 
 
 }

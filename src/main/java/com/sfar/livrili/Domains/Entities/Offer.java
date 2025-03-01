@@ -1,5 +1,7 @@
 package com.sfar.livrili.Domains.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,11 +41,13 @@ public class Offer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_guy_id" , nullable = false)
+    @JsonBackReference
     DeliveryPerson deliveryPerson;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pack_id", nullable = false )
+    @JsonManagedReference
     Pack pack;
 
     @PrePersist

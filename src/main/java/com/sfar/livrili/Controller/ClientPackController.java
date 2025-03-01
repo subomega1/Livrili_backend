@@ -24,9 +24,6 @@ public class ClientPackController {
     public ResponseEntity<Pack> addPack(@RequestBody PackRequestDto packRequestDto , HttpServletRequest httpServletRequest) {
         UUID uuid = (UUID) httpServletRequest.getAttribute("userId");
         return new  ResponseEntity<>(clientPackService.CreatePackForClient(uuid, packRequestDto),HttpStatus.CREATED);
-
-
-
     }
     @GetMapping
     public ResponseEntity<List<PackResponseDto>> getAllPacks(HttpServletRequest httpServletRequest) {

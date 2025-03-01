@@ -1,4 +1,4 @@
-package com.sfar.livrili.Domains.Dto;
+package com.sfar.livrili.Domains.Dto.ErrorDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,13 +17,6 @@ public class ApiErrorResponse {
     private String message;
     private List<FieldsError> fields;
 
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class FieldsError {
-        private String field;
-        private String message;
-    }
+
 
 }

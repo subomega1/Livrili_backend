@@ -1,6 +1,7 @@
 package com.sfar.livrili.Domains.Entities;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +22,7 @@ public class DeliveryPerson extends User {
 
 
     private float rating;
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "deliveryPerson",cascade = CascadeType.ALL ,orphanRemoval = true)
     private List<Offer> offers = new ArrayList<>();
 

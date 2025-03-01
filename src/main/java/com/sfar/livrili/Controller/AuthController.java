@@ -4,7 +4,6 @@ import com.sfar.livrili.Domains.Dto.AuthResponseDto;
 import com.sfar.livrili.Domains.Dto.LoginRequestDto;
 import com.sfar.livrili.Domains.Dto.UserDto;
 import com.sfar.livrili.Domains.Dto.UserDtoRequest;
-import com.sfar.livrili.Domains.Entities.User;
 import com.sfar.livrili.Service.AuthenticationService;
 import com.sfar.livrili.Service.UserService;
 
@@ -12,8 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,9 +26,9 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<UserDto> signup(@Valid @RequestBody UserDtoRequest user) {
-       UserDto userDto= userService.addUser(user);
-       return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+    public ResponseEntity<String> signup(@Valid @RequestBody UserDtoRequest user) {
+    String  res = userService.addUser(user);
+       return new ResponseEntity<>(res, HttpStatus.CREATED);
 
 
 

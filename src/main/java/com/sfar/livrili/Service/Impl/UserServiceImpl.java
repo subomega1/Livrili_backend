@@ -1,18 +1,26 @@
 package com.sfar.livrili.Service.Impl;
 
+import com.sfar.livrili.Domains.Dto.ErrorDto.FieldsError;
+import com.sfar.livrili.Domains.Dto.ErrorDto.IllegalArgs;
 import com.sfar.livrili.Domains.Dto.UserDto;
 import com.sfar.livrili.Domains.Dto.UserDtoRequest;
 import com.sfar.livrili.Domains.Entities.Client;
 import com.sfar.livrili.Domains.Entities.DeliveryPerson;
 import com.sfar.livrili.Domains.Entities.User;
+import com.sfar.livrili.Mapper.UserMapper;
 import com.sfar.livrili.Repositories.ClientRepository;
 import com.sfar.livrili.Repositories.DeliveryPersonRepository;
 import com.sfar.livrili.Repositories.UserRepository;
 import com.sfar.livrili.Service.UserService;
-import jakarta.validation.Valid;
+import com.sfar.livrili.Validation.UserCreationValidation;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,56 +30,29 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final ClientRepository clientRepository;
     private final DeliveryPersonRepository deliveryPersonRepository;
+    private final UserMapper userMapper;
     @Override
-    public UserDto addUser( @Valid UserDtoRequest user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email already Exist");
-        }
-        System.out.println(user.getRole().name());
+    public String addUser(  UserDtoRequest user) {
 
-        if (!user.getPassword().equals(user.getConfirmPassword())) {
-            throw new IllegalArgumentException("Password and Confirmed Password do not match");
+        List <FieldsError> checkForErrors = ValidateUserRequest(user);
+        if (!checkForErrors.isEmpty()) {
+            throw  new IllegalArgs("user cannot be registered", checkForErrors);
         }
+        Object userToCheck = userMapper.toUser(user);
+        if (userToCheck instanceof Client) {
+            ((Client) userToCheck).setPassword(passwordEncoder.encode(user.getPassword()));
+            clientRepository.save((Client) userToCheck);
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }else {
+        ((DeliveryPerson) userToCheck).setPassword(passwordEncoder.encode(user.getPassword()));
+        deliveryPersonRepository.save((DeliveryPerson) userToCheck);
+       }
+        return "Your account has been created";
 
-        if (user.getRole().name().equals("CLIENT")) {
-            if (user.getAddress() == null) {
-                throw new IllegalArgumentException("User Address is required");
-            }
 
-            Client newClient = Client.builder()
-                    .address(user.getAddress())
-                    .build();
 
-            newClient.setEmail(user.getEmail());
-            newClient.setPassword(user.getPassword());
-            newClient.setGender(user.getGender());
-            newClient.setRole(user.getRole());
-            newClient.setPhone(user.getPhone());
-            newClient.setFirstName(user.getFirstName());
-            newClient.setLastName(user.getLastName());
-            Client client = clientRepository.save(newClient);
-            return convertToDto(client);
-        }
-        else if (user.getRole().name().equals(
-                "DELIVERY_PERSON")) {
-            DeliveryPerson userToSave = DeliveryPerson.builder()
-                    .rating(-1F)
-                    .build();
-            userToSave.setEmail(user.getEmail());
-            userToSave.setPassword(user.getPassword());
-            userToSave.setRole(user.getRole());
-            userToSave.setPhone(user.getPhone());
-            userToSave.setFirstName(user.getFirstName());
-            userToSave.setLastName(user.getLastName());
-            userToSave.setGender(user.getGender());
-            DeliveryPerson deliveryPerson = deliveryPersonRepository.save(userToSave);
-            return convertToDto(deliveryPerson);
-        }
-        else {
-            throw new IllegalArgumentException("Role not supported");
-        }
+
+
     }
 
     private UserDto convertToDto(User user) {
@@ -82,5 +63,64 @@ public class UserServiceImpl implements UserService {
                 .gender(user.getGender())
                 .role(user.getRole())
                 .build();
-    }}
+    }
+private List <FieldsError> ValidateUserRequest (UserDtoRequest user) {
+        List <FieldsError> errors = new ArrayList<>();
+        if (!UserCreationValidation.notEmpty(user.getEmail())) {
+            errors.add(new FieldsError( "email", "Email is required"));
+        }
+        if (!UserCreationValidation.isEmailValid(user.getEmail())) {
+            errors.add(new FieldsError( "email", "Invalid email"));
+        }
+        if (userRepository.existsByEmail(user.getEmail())) {
+            errors.add(new FieldsError( "email", "Email already exist"));
+        }
+        if (!UserCreationValidation.notEmpty(user.getPhone())) {
+            errors.add(new FieldsError( "phone", "Phone number is required"));
+    }
+        if (!UserCreationValidation.validatePhone(user.getPhone())) {
+            errors.add(new FieldsError( "phone", "Invalid phone number"));
+        }
+        if (userRepository.existsByPhone(user.getPhone())) {
+            errors.add(new FieldsError("phone", "Phone number already exist"));
+        }
+        if (!UserCreationValidation.notEmpty(user.getPassword())){
+            errors.add(new FieldsError( "password", "Password is required"));
+        }
+        if (UserCreationValidation.notEmpty(user.getConfirmPassword())){
+            errors.add(new FieldsError( "confirmPassword", "Password is required"));
+        }
+        if (UserCreationValidation.passwordMatch(user.getPassword(), user.getConfirmPassword())) {
+            errors.add(new FieldsError( "password", "Passwords do not match"));
+        }
+        if (!UserCreationValidation.notEmpty(user.getFirstName())) {
+            errors.add(new FieldsError( "firstName", "First name is required"));
+        }
+        if (!UserCreationValidation.validateNameFields(user.getFirstName())) {
+            errors.add(new FieldsError( "firstName", "Invalid first name"));
+        }
+        if (!UserCreationValidation.notEmpty(user.getLastName())) {
+            errors.add(new FieldsError("lastName", "Last name is required"));
+        }
+        if (!UserCreationValidation.validateNameFields(user.getLastName())) {
+            errors.add(new FieldsError( "lastName", "Invalid last name"));
+        }
+        if (!UserCreationValidation.notEmpty(user.getAddress())) {
+            errors.add(new FieldsError( "address", "Address is required"));
+        }
+        if (!UserCreationValidation.validateNameFields(user.getAddress())) {
+            errors.add(new FieldsError( "address", "Invalid address"));
+        }
+        if (!UserCreationValidation.genderValid(user.getGender())) {
+            errors.add(new FieldsError( "gender", "Gender must be valid"));
+        }
+        if (!UserCreationValidation.roleValidation(user.getRole())) {
+            errors.add(new FieldsError( "role", "Role must be valid"));
+        }
+        return errors;
+}
+
+
+}
+
 
