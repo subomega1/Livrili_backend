@@ -35,7 +35,7 @@ public class UserCreationValidation {
     }
 
     public static boolean passwordMatch(String password, String confirmPassword) {
-        return password.equals(confirmPassword);
+        return confirmPassword.equals(password);
     }
     public static boolean genderValid(Gender gender) {
         return gender != null && (gender.equals(Gender.MALE) || gender.equals(Gender.FEMALE));

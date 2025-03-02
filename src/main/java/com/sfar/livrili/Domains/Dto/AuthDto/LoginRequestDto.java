@@ -1,4 +1,4 @@
-package com.sfar.livrili.Domains.Dto;
+package com.sfar.livrili.Domains.Dto.AuthDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,5 +1,6 @@
 package com.sfar.livrili.Service.Impl;
 
+import com.sfar.livrili.Domains.Entities.User;
 import com.sfar.livrili.Service.AuthenticationService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -82,6 +84,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     }
+
+
 
     public String extractRole(String token) {
         Claims claims = Jwts.parser().setSigningKey(getSecretKey()).build().parseClaimsJws(token).getBody();

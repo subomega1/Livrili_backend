@@ -37,7 +37,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/auth/signUp").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/auth/logout").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/auth").authenticated()
                                 .requestMatchers(HttpMethod.POST,"/api/auth/testAuth").hasAuthority("DELIVERY_PERSON")
                                 .requestMatchers(HttpMethod.POST,"/api/client/packs").hasAuthority("CLIENT")
                                 .requestMatchers(HttpMethod.GET,"/api/client/packs").hasAuthority("CLIENT")

@@ -2,8 +2,8 @@ package com.sfar.livrili.Service.Impl;
 
 import com.sfar.livrili.Domains.Dto.ErrorDto.FieldsError;
 import com.sfar.livrili.Domains.Dto.ErrorDto.IllegalArgs;
-import com.sfar.livrili.Domains.Dto.UserDto;
-import com.sfar.livrili.Domains.Dto.UserDtoRequest;
+import com.sfar.livrili.Domains.UsersDto.UserDto;
+import com.sfar.livrili.Domains.Dto.AuthDto.UserDtoRequest;
 import com.sfar.livrili.Domains.Entities.Client;
 import com.sfar.livrili.Domains.Entities.DeliveryPerson;
 import com.sfar.livrili.Domains.Entities.User;
@@ -13,14 +13,13 @@ import com.sfar.livrili.Repositories.DeliveryPersonRepository;
 import com.sfar.livrili.Repositories.UserRepository;
 import com.sfar.livrili.Service.UserService;
 import com.sfar.livrili.Validation.UserCreationValidation;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +51,12 @@ public class UserServiceImpl implements UserService {
 
 
 
+
+    }
+
+    @Override
+    public User getUser(UUID userId) {
+        return userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("User not found"));
 
     }
 
@@ -87,10 +92,14 @@ private List <FieldsError> ValidateUserRequest (UserDtoRequest user) {
         if (!UserCreationValidation.notEmpty(user.getPassword())){
             errors.add(new FieldsError( "password", "Password is required"));
         }
-        if (UserCreationValidation.notEmpty(user.getConfirmPassword())){
-            errors.add(new FieldsError( "confirmPassword", "Password is required"));
+        if (!UserCreationValidation.passwordRespect(user.getPassword())){
+            errors.add(new FieldsError("password", "Password must be at least 6 characters"));
         }
-        if (UserCreationValidation.passwordMatch(user.getPassword(), user.getConfirmPassword())) {
+        if (!UserCreationValidation.notEmpty(user.getConfirmPassword())){
+            errors.add(new FieldsError( "confirmPassword", "Confirmed Password is required"));
+        }
+        if (!UserCreationValidation.passwordMatch(user.getPassword(), user.getConfirmPassword())) {
+
             errors.add(new FieldsError( "password", "Passwords do not match"));
         }
         if (!UserCreationValidation.notEmpty(user.getFirstName())) {

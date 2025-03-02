@@ -1,4 +1,4 @@
-package com.sfar.livrili.Domains.Dto;
+package com.sfar.livrili.Domains.Dto.AuthDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class AuthResponseDto {
     private String token;
     private long  expiresIn;
-    private String role;
+    private String message;
 }

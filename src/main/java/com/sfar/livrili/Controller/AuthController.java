@@ -1,21 +1,22 @@
 package com.sfar.livrili.Controller;
 
-import com.sfar.livrili.Domains.Dto.AuthResponseDto;
-import com.sfar.livrili.Domains.Dto.LoginRequestDto;
-import com.sfar.livrili.Domains.Dto.UserDto;
-import com.sfar.livrili.Domains.Dto.UserDtoRequest;
+import com.sfar.livrili.Domains.Dto.AuthDto.AuthResponseDto;
+import com.sfar.livrili.Domains.Dto.AuthDto.LoginRequestDto;
+import com.sfar.livrili.Domains.Dto.AuthDto.UserDtoRequest;
+import com.sfar.livrili.Domains.Entities.User;
+import com.sfar.livrili.Mapper.UserMapper;
 import com.sfar.livrili.Service.AuthenticationService;
 import com.sfar.livrili.Service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,6 +25,7 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationService authenticationService;
+    private final UserMapper userMapper;
 
     @PostMapping("/signUp")
     public ResponseEntity<String> signup(@Valid @RequestBody UserDtoRequest user) {
@@ -39,18 +41,27 @@ public class AuthController {
        String token = authenticationService.generateToken(userDetails);
        AuthResponseDto authResponseDto =AuthResponseDto.builder()
                        .token(token)
-               .expiresIn(84600L)
-               .role(userDetails.getAuthorities().stream().findFirst().get().getAuthority())
+                        .expiresIn(84600L)
+                        .message("w")
                .build();
        return new ResponseEntity<>(authResponseDto, HttpStatus.OK);
 
     }
+
 
     @PostMapping("/testAuth")
     public ResponseEntity<String> testAuth() {
 
         return ResponseEntity.ok("Hello World");
     }
+
+    @GetMapping
+    public ResponseEntity<Object> getUser( HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("userId");
+        User user=userService.getUser(userId);
+        return new  ResponseEntity<>(userMapper.ToClientOrDeliveryPerson(user),HttpStatus.OK);
+    }
+
 
 
 

@@ -1,6 +1,8 @@
 package com.sfar.livrili.Service;
 
+import com.sfar.livrili.Domains.Entities.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface AuthenticationService {
 
@@ -8,5 +10,6 @@ public interface AuthenticationService {
     String generateToken(UserDetails userDetails);
     UserDetails validateToken(String token);
     boolean isExpiredToken(String token);
+
 
 }
