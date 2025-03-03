@@ -1,12 +1,9 @@
-package com.sfar.livrili.Domains.Dto;
+package com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto;
 
-import com.sfar.livrili.Domains.Entities.OfferStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @Data
 @Builder
@@ -14,5 +11,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OfferRequest {
     private Double price;
+    private int dayToDeliver;
 
 }

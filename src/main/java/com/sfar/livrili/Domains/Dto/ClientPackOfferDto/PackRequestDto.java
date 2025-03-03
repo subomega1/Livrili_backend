@@ -1,7 +1,5 @@
-package com.sfar.livrili.Domains.Dto;
+package com.sfar.livrili.Domains.Dto.ClientPackOfferDto;
 
-
-import com.sfar.livrili.Domains.Entities.PackageStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

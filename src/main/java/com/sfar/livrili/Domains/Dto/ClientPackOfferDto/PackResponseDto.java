@@ -1,5 +1,6 @@
-package com.sfar.livrili.Domains.Dto;
+package com.sfar.livrili.Domains.Dto.ClientPackOfferDto;
 
+import com.sfar.livrili.Domains.Entities.Offer;
 import com.sfar.livrili.Domains.Entities.PackageStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -25,4 +29,8 @@ public class PackResponseDto {
     private String dropOffLocation;
 
     private PackageStatus status;
+
+    LocalDateTime createdAt;
+
+    private List<OfferClientDto> offers = new ArrayList<>();
 }

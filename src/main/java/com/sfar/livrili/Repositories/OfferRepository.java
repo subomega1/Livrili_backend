@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.UUID;
 
 public interface OfferRepository  extends CrudRepository<Offer, UUID> {
-    boolean existsByDeliveryPerson_Id(@Param("userId") UUID id);
+
+    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM Offer o WHERE o.deliveryPerson.id = :userId AND o.pack.id = :packId")
+    boolean existsByDeliveryPerson_IdAndId(@Param("userId") UUID userId, @Param("packId") UUID packId);
 
 }

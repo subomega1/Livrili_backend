@@ -27,6 +27,9 @@ public class Offer {
     @Column(nullable = false)
     private Double price;
 
+    @Column(nullable = false)
+    private int daysToGetDelivered;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OfferStatus status;
@@ -41,7 +44,7 @@ public class Offer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_guy_id" , nullable = false)
-    @JsonBackReference
+    @JsonManagedReference
     DeliveryPerson deliveryPerson;
 
 

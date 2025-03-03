@@ -1,7 +1,7 @@
 package com.sfar.livrili.Service.Impl;
 
 
-import com.sfar.livrili.Domains.Dto.OfferRequest;
+import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.OfferRequest;
 import com.sfar.livrili.Domains.Entities.*;
 import com.sfar.livrili.Repositories.DeliveryPersonRepository;
 import com.sfar.livrili.Repositories.OfferRepository;
@@ -42,7 +42,7 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         if (pack.getStatus() == PackageStatus.APPROVED) {
             throw new IllegalArgumentException("Pack already approved an offer");
         }
-        if (offerRepository.existsByDeliveryPerson_Id(deliveryPerson.getId())) {
+        if (offerRepository.existsByDeliveryPerson_IdAndId(deliveryPerson.getId(),packId)) {
             throw new IllegalArgumentException("You are already give an offer");
         }
         Offer newOffer = Offer.builder()
@@ -50,6 +50,7 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
                 .pack(pack)
                 .deliveryPerson(deliveryPerson)
                 .status(OfferStatus.PENDING)
+                .daysToGetDelivered(offer.getDayToDeliver())
                 .build();
     offerRepository.save(newOffer);
     return newOffer;

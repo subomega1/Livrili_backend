@@ -1,7 +1,8 @@
 package com.sfar.livrili.Service.Impl;
 
-import com.sfar.livrili.Domains.Dto.PackRequestDto;
-import com.sfar.livrili.Domains.Dto.PackResponseDto;
+import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.OfferClientDto;
+import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackRequestDto;
+import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackResponseDto;
 import com.sfar.livrili.Domains.Entities.Client;
 import com.sfar.livrili.Domains.Entities.Pack;
 import com.sfar.livrili.Domains.Entities.PackageStatus;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -47,19 +49,11 @@ public class ClientPackServiceImpl implements ClientPackService {
 
 
     @Override
-    public List<PackResponseDto> GetAllPacks(UUID userId) {
-        if (userId == null || !clientRepository.existsById(userId)){
+    public List<Pack> GetAllPacks(UUID userId) {
+        if (userId == null || !clientRepository.existsById(userId)) {
             throw new IllegalArgumentException("Client not found");
         }
-        List<Pack> packs = packRepository.findAllByClientId(userId);
-       return packs.stream().map(pack -> PackResponseDto.builder()
-               .id(pack.getId())
-               .description(pack.getDescription())
-               .weight(pack.getWeight())
-               .pickUpLocation(pack.getPickUpLocation())
-               .dropOffLocation(pack.getDropOffLocation())
-               .status(pack.getStatus())
-               .build()).toList();
+        return packRepository.findAllByClientId(userId);
     }
 
     @Override
