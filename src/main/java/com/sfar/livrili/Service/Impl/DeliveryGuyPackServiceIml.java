@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +25,22 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
     private final DeliveryPersonRepository deliveryPersonRepository;
 
     @Override
-    public List<Pack> getPacks() {
-        return packRepository.findAll().stream().filter(pack -> pack.getStatus().equals(PackageStatus.PENDING) || pack.getStatus().equals(PackageStatus.OFFERED)).collect(Collectors.toList());
+    public List<Pack> getPacks(UUID userId) {
+        List<Pack> packs = packRepository.findAll().stream()
+                .filter(pack -> pack.getStatus().equals(PackageStatus.PENDING) || pack.getStatus().equals(PackageStatus.OFFERED))
+                .collect(Collectors.toList());
+
+        packs.forEach(pack -> {
+            List<Offer> filteredOffers = pack.getOffers().stream()
+                    .filter(offer -> !offer.getDeliveryPerson().getId().equals(userId))
+                    .collect(Collectors.toList());
+
+            pack.setOffers(filteredOffers); // Ensure filtered offers are set back
+        });
+
+        return packs;
     }
+
 
     @Override
     public Offer CreateOffer(OfferRequest offer , UUID userId ,UUID packId) {
@@ -52,6 +66,10 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
                 .status(OfferStatus.PENDING)
                 .daysToGetDelivered(offer.getDayToDeliver())
                 .build();
+        if (pack.getStatus() != PackageStatus.OFFERED) {
+            pack.setStatus(PackageStatus.OFFERED);
+        }
+        packRepository.save(pack);
     offerRepository.save(newOffer);
     return newOffer;
     }

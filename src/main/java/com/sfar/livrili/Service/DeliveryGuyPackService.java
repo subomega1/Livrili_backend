@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface DeliveryGuyPackService {
 
-    List<Pack> getPacks();
+    List<Pack> getPacks(UUID userId);
     Offer CreateOffer(OfferRequest offer, UUID userId,UUID packId);
 }
