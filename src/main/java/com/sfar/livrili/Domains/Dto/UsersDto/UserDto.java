@@ -1,4 +1,4 @@
-package com.sfar.livrili.Domains.UsersDto;
+package com.sfar.livrili.Domains.Dto.UsersDto;
 
 import com.sfar.livrili.Domains.Entities.Gender;
 import com.sfar.livrili.Domains.Entities.Role;

@@ -2,7 +2,7 @@ package com.sfar.livrili.Service.Impl;
 
 import com.sfar.livrili.Domains.Dto.ErrorDto.FieldsError;
 import com.sfar.livrili.Domains.Dto.ErrorDto.IllegalArgs;
-import com.sfar.livrili.Domains.UsersDto.UserDto;
+import com.sfar.livrili.Domains.Dto.UsersDto.UserDto;
 import com.sfar.livrili.Domains.Dto.AuthDto.UserDtoRequest;
 import com.sfar.livrili.Domains.Entities.Client;
 import com.sfar.livrili.Domains.Entities.DeliveryPerson;

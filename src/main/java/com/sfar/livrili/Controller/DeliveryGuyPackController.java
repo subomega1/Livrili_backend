@@ -1,6 +1,7 @@
 package com.sfar.livrili.Controller;
 
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.DeliveryGuyPackResponseDto;
+import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.GetOfferRes;
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.OfferRequest;
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.OfferResDto;
 import com.sfar.livrili.Domains.Entities.Offer;
@@ -39,5 +40,14 @@ public class DeliveryGuyPackController {
         UUID userId = (UUID) httpServletRequest.getAttribute("userId");
         Offer offer = deliveryGuyPackService.CreateOffer(offerRequest,userId,id);
         return new ResponseEntity<>(offerForDeliveryGuyMapper.toOfferResDto(offer), HttpStatus.CREATED);
+    }
+    @GetMapping("/offer")
+    ResponseEntity<List<GetOfferRes>> getOffer(HttpServletRequest httpServletRequest) {
+        UUID userId = (UUID) httpServletRequest.getAttribute("userId");
+        List<Offer> offers = deliveryGuyPackService.getOffers(userId) ;
+
+        List<GetOfferRes> offerRes = offers.stream().map(offerForDeliveryGuyMapper::toGetOfferRes).toList();
+        return new ResponseEntity<>(offerRes, HttpStatus.OK);
+
     }
 }

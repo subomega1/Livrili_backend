@@ -74,4 +74,20 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
     return newOffer;
     }
 
+    @Override
+    public Offer UpdateOffer(OfferRequest offer, UUID userId) {
+        return null;
+    }
+
+    @Override
+    public List<Offer> getOffers(UUID userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User id cannot be null");
+        }
+        if (!deliveryPersonRepository.existsById(userId)) {
+            throw new IllegalArgumentException("this user don't exist");
+        }
+        return offerRepository.findByDeliveryPersonId(userId);
+    }
+
 }

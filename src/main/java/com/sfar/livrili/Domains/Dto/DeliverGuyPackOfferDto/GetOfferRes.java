@@ -1,21 +1,23 @@
 package com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto;
 
 import com.sfar.livrili.Domains.Entities.OfferStatus;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
+
 @Getter
 @Setter
-@SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
-public class OfferResDto {
-    private UUID id;
-    private Double price;
-    private int dayToDeliver;
-    private OfferStatus status;
-    private LocalDateTime createdAt;
+@SuperBuilder
+public class GetOfferRes extends OfferResDto {
+    
+    private UUID packId;
+
+
 }
