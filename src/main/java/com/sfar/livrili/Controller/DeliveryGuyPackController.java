@@ -50,4 +50,10 @@ public class DeliveryGuyPackController {
         return new ResponseEntity<>(offerRes, HttpStatus.OK);
 
     }
+    @PutMapping("/offer/{id}")
+    ResponseEntity<OfferResDto>updateOffer(@PathVariable UUID id , @RequestBody OfferRequest offerRequest, HttpServletRequest httpServletRequest) {
+        UUID userId = (UUID) httpServletRequest.getAttribute("userId");
+        Offer offer = deliveryGuyPackService.UpdateOffer(offerRequest,userId,id);
+        return new ResponseEntity<>(offerForDeliveryGuyMapper.toOfferResDto(offer), HttpStatus.OK);
+    }
 }

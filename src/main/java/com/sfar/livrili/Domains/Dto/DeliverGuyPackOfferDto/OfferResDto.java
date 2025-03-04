@@ -15,7 +15,7 @@ import java.util.UUID;
 public class OfferResDto {
     private UUID id;
     private Double price;
-    private int dayToDeliver;
+    private Integer dayToDeliver;
     private OfferStatus status;
     private LocalDateTime createdAt;
 }

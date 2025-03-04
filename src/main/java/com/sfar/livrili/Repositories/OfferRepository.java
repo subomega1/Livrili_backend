@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface OfferRepository  extends CrudRepository<Offer, UUID> {
@@ -16,5 +17,11 @@ public interface OfferRepository  extends CrudRepository<Offer, UUID> {
 
     @Query("select o from Offer o where o.deliveryPerson.id = :userId")
     List<Offer> findByDeliveryPersonId(@Param("userId") UUID userId);
+
+
+    @Query("select o from Offer o where o.id =:offerId and o.deliveryPerson.id =:userId ")
+    Optional<Offer> findOfferByIdAndUserId(@Param("userId") UUID userId, @Param("offerId") UUID id);
+
+
 
 }

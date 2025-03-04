@@ -28,7 +28,7 @@ public class Offer {
     private Double price;
 
     @Column(nullable = false)
-    private int daysToGetDelivered;
+    private Integer daysToGetDelivered;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

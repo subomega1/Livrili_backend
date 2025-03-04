@@ -22,6 +22,7 @@ public class OfferForDeliveryGuyMapper {
                 .price(offer.getPrice())
                 .status(offer.getStatus())
                 .createdAt(offer.getCreatedAt())
+                .dayToDeliver(offer.getDaysToGetDelivered())
                 .build();
     }
     public GetOfferRes toGetOfferRes(Offer offer) {

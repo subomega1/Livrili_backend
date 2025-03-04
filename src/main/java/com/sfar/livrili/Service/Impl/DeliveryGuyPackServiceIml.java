@@ -75,8 +75,29 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
     }
 
     @Override
-    public Offer UpdateOffer(OfferRequest offer, UUID userId) {
-        return null;
+    public Offer UpdateOffer(OfferRequest offer, UUID userId, UUID offerId) {
+        if (offer == null) {
+            throw new IllegalArgumentException("Offer cannot be null");
+        }
+        if (userId == null) {
+            throw new IllegalArgumentException("User id cannot be null");
+        }
+        if (!deliveryPersonRepository.existsById(userId)) {
+            throw new IllegalArgumentException("User does not exist");
+        }
+        Offer offerToUpdate = offerRepository.findOfferByIdAndUserId(userId, offerId).orElseThrow( () -> new IllegalArgumentException("Offer not found"));
+        if (offerToUpdate.getStatus() == OfferStatus.ACCEPTED) {
+            throw new IllegalStateException("Offer already accepted");
+        }
+        if (offer.getPrice() != null){
+            offerToUpdate.setPrice(offer.getPrice());
+        }
+        if (offer.getDayToDeliver() != null){
+            offerToUpdate.setDaysToGetDelivered(offer.getDayToDeliver());
+
+
+        }
+        return offerRepository.save(offerToUpdate);
     }
 
     @Override

@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OfferRequest {
     private Double price;
-    private int dayToDeliver;
+    private Integer dayToDeliver;
 
 }
