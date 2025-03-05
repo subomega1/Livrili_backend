@@ -31,6 +31,7 @@ public class PacksForClientMapper {
                         .deliveryGuyPrice(offer.getPrice())
                         .nbDaysToDeliver(offer.getDaysToGetDelivered())
                         .createdAt(offer.getCreatedAt())
+                        .offerStatus(offer.getStatus())
                         .build()).collect(Collectors.toList()))
                 .build();
     }
