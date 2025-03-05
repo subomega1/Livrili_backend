@@ -1,6 +1,7 @@
 package com.sfar.livrili.Repositories;
 
 import com.sfar.livrili.Domains.Entities.Offer;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +22,16 @@ public interface OfferRepository  extends CrudRepository<Offer, UUID> {
 
     @Query("select o from Offer o where o.id =:offerId and o.deliveryPerson.id =:userId ")
     Optional<Offer> findOfferByIdAndUserId(@Param("userId") UUID userId, @Param("offerId") UUID id);
+
+
+
+    @Modifying
+    @Query("DELETE FROM Offer o WHERE o.deliveryPerson.id = :userId AND o.id = :offerId ")
+    void deleteOfferByIdAndUserId(@Param("userId") UUID userId, @Param("offerId") UUID id);
+
+    @Query("SELECT COUNT(o) > 0 FROM Offer o WHERE o.pack.id = :packId")
+    boolean existsByPackId(@Param("packId") UUID packId);
+
 
 
 

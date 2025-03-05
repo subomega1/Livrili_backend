@@ -56,4 +56,10 @@ public class DeliveryGuyPackController {
         Offer offer = deliveryGuyPackService.UpdateOffer(offerRequest,userId,id);
         return new ResponseEntity<>(offerForDeliveryGuyMapper.toOfferResDto(offer), HttpStatus.OK);
     }
+    @DeleteMapping("/offer/{id}")
+    ResponseEntity<String>deleteOffer(@PathVariable UUID id , HttpServletRequest httpServletRequest) {
+        UUID userId = (UUID) httpServletRequest.getAttribute("userId");
+        deliveryGuyPackService.deleteOffer(userId, id);
+        return new ResponseEntity<>("Offer was deleted successfully",HttpStatus.OK);
+    }
 }

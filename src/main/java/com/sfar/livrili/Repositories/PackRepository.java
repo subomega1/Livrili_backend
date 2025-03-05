@@ -25,8 +25,14 @@ public interface PackRepository extends JpaRepository<Pack, UUID> {
     @Query("DELETE FROM Pack p WHERE p.client.id = :clientId AND p.id = :packId")
     void deleteByClientIdAndId(@Param("clientId") UUID clientId, @Param("packId") UUID id);
 
-    @Query("SELECT p.status FROM Pack p")
-    List<Pack> findAllPackForDeliveryGuy();
+
+    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END FROM Pack p LEFT JOIN p.offers o WHERE p.id = :id")
+    boolean existsPackWithOffers(@Param("id") UUID id);
+
+    @Query("select p from  Pack p where p.id =:id")
+    Optional<Pack> findPackById(@Param("id") UUID id);
+
+
 
 
 

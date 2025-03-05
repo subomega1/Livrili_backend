@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET,"/api/DG/pack/**").hasAuthority("DELIVERY_PERSON")
                                 .requestMatchers(HttpMethod.POST,"/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
                                 .requestMatchers(HttpMethod.PUT,"/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                                .requestMatchers(HttpMethod.DELETE,"/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
 
 
 

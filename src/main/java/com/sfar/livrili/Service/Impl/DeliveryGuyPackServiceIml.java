@@ -7,6 +7,7 @@ import com.sfar.livrili.Repositories.DeliveryPersonRepository;
 import com.sfar.livrili.Repositories.OfferRepository;
 import com.sfar.livrili.Repositories.PackRepository;
 import com.sfar.livrili.Service.DeliveryGuyPackService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -111,4 +112,32 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         return offerRepository.findByDeliveryPersonId(userId);
     }
 
+    @Transactional
+    @Override
+    public void deleteOffer(UUID userId, UUID offerId) {
+        if (!deliveryPersonRepository.existsById(userId)) {
+            throw new IllegalArgumentException("This user doesn't exist");
+        }
+        if (!offerRepository.existsById(offerId)) {
+            throw new IllegalArgumentException("This offer doesn't exist");
+        }
+
+        Offer offerToDelete = offerRepository.findOfferByIdAndUserId(userId, offerId)
+                .orElseThrow(() -> new IllegalArgumentException("Offer for this User not found"));
+
+        UUID packId = offerToDelete.getPack().getId();
+
+        // Delete the offer
+        offerRepository.deleteOfferByIdAndUserId(userId, offerId);
+
+        // Check if the pack has any remaining offers
+        boolean hasOtherOffers = offerRepository.existsByPackId(packId);
+
+        if (!hasOtherOffers) {
+            Pack pack = packRepository.findById(packId)
+                    .orElseThrow(() -> new IllegalArgumentException("Pack not found"));
+            pack.setStatus(PackageStatus.PENDING);
+            packRepository.save(pack);
+        }
+    }
 }
