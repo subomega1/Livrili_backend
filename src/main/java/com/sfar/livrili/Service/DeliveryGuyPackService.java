@@ -15,4 +15,5 @@ public interface DeliveryGuyPackService {
     List<Offer> getOffers(UUID userId);
     void deleteOffer(UUID userId,UUID offerId );
     List<Pack> packsToDeliver(UUID userId);
+    Pack deliverPack(UUID userId,UUID packId);
 }

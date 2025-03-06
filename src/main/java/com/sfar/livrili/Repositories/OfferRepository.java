@@ -40,4 +40,6 @@ public interface OfferRepository  extends CrudRepository<Offer, UUID> {
 
 
 
+
+
 }

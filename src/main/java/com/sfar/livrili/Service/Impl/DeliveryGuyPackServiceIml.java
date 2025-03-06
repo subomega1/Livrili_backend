@@ -163,4 +163,12 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
                 .toList();
     }
 
+    @Override
+    public Pack deliverPack(UUID userId, UUID packId) {
+        if (userId == null || !deliveryPersonRepository.existsById(userId)) {
+            throw new IllegalArgumentException("This user doesn't exist");
+        }
+
+    }
+
 }
