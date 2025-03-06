@@ -1,6 +1,8 @@
 package com.sfar.livrili.Repositories;
 
 import com.sfar.livrili.Domains.Entities.Offer;
+import com.sfar.livrili.Domains.Entities.Pack;
+import com.sfar.livrili.Domains.Entities.PackageStatus;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -31,6 +33,9 @@ public interface OfferRepository  extends CrudRepository<Offer, UUID> {
 
     @Query("SELECT COUNT(o) > 0 FROM Offer o WHERE o.pack.id = :packId")
     boolean existsByPackId(@Param("packId") UUID packId);
+
+
+
 
 
 

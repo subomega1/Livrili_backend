@@ -1,11 +1,13 @@
 package com.sfar.livrili.Controller;
 
+import com.sfar.livrili.Domains.Dto.ApprovedPackDto;
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.DeliveryGuyPackResponseDto;
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.GetOfferRes;
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.OfferRequest;
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.OfferResDto;
 import com.sfar.livrili.Domains.Entities.Offer;
 import com.sfar.livrili.Domains.Entities.Pack;
+import com.sfar.livrili.Mapper.ApprovedPackMapper;
 import com.sfar.livrili.Mapper.OfferForDeliveryGuyMapper;
 import com.sfar.livrili.Mapper.PacksForDeliveryGuyMapper;
 import com.sfar.livrili.Service.DeliveryGuyPackService;
@@ -27,6 +29,7 @@ public class DeliveryGuyPackController {
     private final DeliveryGuyPackService deliveryGuyPackService;
     private final PacksForDeliveryGuyMapper packsForDeliveryGuyMapper;
     private final OfferForDeliveryGuyMapper offerForDeliveryGuyMapper;
+    private final ApprovedPackMapper approvedPackMapper;
 
     @GetMapping
     ResponseEntity<List<DeliveryGuyPackResponseDto>> getAllPacks(HttpServletRequest req) {
@@ -50,6 +53,15 @@ public class DeliveryGuyPackController {
         return new ResponseEntity<>(offerRes, HttpStatus.OK);
 
     }
+    @GetMapping("/approved")
+    ResponseEntity<List<ApprovedPackDto>> getApprovedPacks(HttpServletRequest httpServletRequest) {
+        UUID userId = (UUID) httpServletRequest.getAttribute("userId");
+        List<Pack> packs = deliveryGuyPackService.packsToDeliver(userId) ;
+        List<ApprovedPackDto> approvedPacks = packs.stream().map(approvedPackMapper::toApprovedPackDto).toList();
+        return new ResponseEntity<>(approvedPacks, HttpStatus.OK);
+
+    }
+
     @PutMapping("/offer/{id}")
     ResponseEntity<OfferResDto>updateOffer(@PathVariable UUID id , @RequestBody OfferRequest offerRequest, HttpServletRequest httpServletRequest) {
         UUID userId = (UUID) httpServletRequest.getAttribute("userId");

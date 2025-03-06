@@ -36,6 +36,10 @@ public interface PackRepository extends JpaRepository<Pack, UUID> {
     @Query("SELECT p FROM Pack p WHERE p.status = :status AND p.client.id = :clientId")
     Optional<List<Pack>> getApprovedPacksByClientId(@Param("clientId") UUID clientId, @Param("status") PackageStatus status);
 
+    @Query("SELECT p FROM Pack p WHERE p.status = :status")
+    Optional<List<Pack>> getApprovedPacks( @Param("status") PackageStatus status);
+
+
 
 
 

@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -144,4 +145,22 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
             packRepository.save(pack);
         }
     }
+
+    @Override
+    public List<Pack> packsToDeliver(UUID userId) {
+        if (userId == null || !deliveryPersonRepository.existsById(userId)) {
+            throw new IllegalArgumentException("This user doesn't exist");
+        }
+
+        List<Pack> approvedPacks = packRepository.getApprovedPacks(PackageStatus.APPROVED).orElseThrow((() -> new IllegalArgumentException("No approved packs")));
+
+
+
+        return approvedPacks.stream()
+                .filter(pack -> pack.getOffers().stream()
+                        .anyMatch(offer -> offer.getDeliveryPerson().getId().equals(userId) &&
+                                offer.getStatus().equals(OfferStatus.ACCEPTED))) // Only accepted offers
+                .toList();
+    }
+
 }
