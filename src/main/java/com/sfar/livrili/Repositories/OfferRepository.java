@@ -1,6 +1,7 @@
 package com.sfar.livrili.Repositories;
 
 import com.sfar.livrili.Domains.Entities.Offer;
+import com.sfar.livrili.Domains.Entities.OfferStatus;
 import com.sfar.livrili.Domains.Entities.Pack;
 import com.sfar.livrili.Domains.Entities.PackageStatus;
 import org.springframework.data.jpa.repository.Modifying;
@@ -34,6 +35,13 @@ public interface OfferRepository  extends CrudRepository<Offer, UUID> {
     @Query("SELECT COUNT(o) > 0 FROM Offer o WHERE o.pack.id = :packId")
     boolean existsByPackId(@Param("packId") UUID packId);
 
+
+    @Query("SELECT o.pack.id FROM Offer o WHERE o.status = :offerStatus AND o.deliveryPerson.id = :userId and o.pack.id = :packId and o.pack.status = :packStatus")
+    Optional<UUID> PackToDeliver(@Param("userId") UUID userId, @Param("packId") UUID packId, @Param("offerStatus") OfferStatus offerStatus , @Param("packStatus") PackageStatus packStatus);
+
+
+    @Query("SELECT o.pack FROM Offer o WHERE o.status = :offerStatus AND o.deliveryPerson.id = :userId and o.pack.status = :packStatus")
+    List<Pack> getDeliveredPacks(@Param("userId") UUID userId, @Param("offerStatus") OfferStatus offerStatus , @Param("packStatus") PackageStatus packStatus);
 
 
 

@@ -61,6 +61,14 @@ public class DeliveryGuyPackController {
         return new ResponseEntity<>(approvedPacks, HttpStatus.OK);
 
     }
+    @GetMapping("/delivered")
+    ResponseEntity<List<ApprovedPackDto>> getDeliveredPacks(HttpServletRequest httpServletRequest) {
+        UUID userId = (UUID) httpServletRequest.getAttribute("userId");
+        List<Pack> packs = deliveryGuyPackService.deliveredPacks(userId) ;
+        List<ApprovedPackDto> approvedPacks = packs.stream().map(approvedPackMapper::toApprovedPackDto).toList();
+        return new ResponseEntity<>(approvedPacks, HttpStatus.OK);
+
+    }
 
     @PutMapping("/offer/{id}")
     ResponseEntity<OfferResDto>updateOffer(@PathVariable UUID id , @RequestBody OfferRequest offerRequest, HttpServletRequest httpServletRequest) {
@@ -68,10 +76,19 @@ public class DeliveryGuyPackController {
         Offer offer = deliveryGuyPackService.UpdateOffer(offerRequest,userId,id);
         return new ResponseEntity<>(offerForDeliveryGuyMapper.toOfferResDto(offer), HttpStatus.OK);
     }
+
+    @PutMapping("/{id}/delivered")
+    ResponseEntity<ApprovedPackDto>deliver(@PathVariable UUID id , HttpServletRequest httpServletRequest) {
+        UUID userId = (UUID) httpServletRequest.getAttribute("userId");
+        Pack pack = deliveryGuyPackService.deliverPack(userId, id);
+        return new ResponseEntity<>(approvedPackMapper.toApprovedPackDto(pack), HttpStatus.OK);
+    }
+
     @DeleteMapping("/offer/{id}")
     ResponseEntity<String>deleteOffer(@PathVariable UUID id , HttpServletRequest httpServletRequest) {
         UUID userId = (UUID) httpServletRequest.getAttribute("userId");
         deliveryGuyPackService.deleteOffer(userId, id);
         return new ResponseEntity<>("Offer was deleted successfully",HttpStatus.OK);
     }
+
 }

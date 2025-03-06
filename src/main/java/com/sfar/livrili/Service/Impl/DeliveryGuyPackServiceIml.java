@@ -168,7 +168,27 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         if (userId == null || !deliveryPersonRepository.existsById(userId)) {
             throw new IllegalArgumentException("This user doesn't exist");
         }
+        if (packId == null ) {
+            throw new IllegalArgumentException("This packId cannot be null");
+        }
+        UUID deliveryGuyPackToDeliverId = offerRepository.PackToDeliver(userId,packId,OfferStatus.ACCEPTED,PackageStatus.APPROVED).orElseThrow( () -> new IllegalArgumentException("No approved pack for this User"));
+        if (!deliveryGuyPackToDeliverId.equals(packId)) {
+            throw new IllegalArgumentException("This User do not have this approved pack");
+        }
+        Pack deliveredPack = packRepository.findPackById(packId).orElseThrow( () -> new IllegalArgumentException("Pack not found"));
+        deliveredPack.setStatus(PackageStatus.DELIVERED);
+        return packRepository.save(deliveredPack);
 
+
+
+    }
+
+    @Override
+    public List<Pack> deliveredPacks(UUID userId) {
+        if (userId == null || !deliveryPersonRepository.existsById(userId)) {
+            throw new IllegalArgumentException("This user doesn't exist");
+        }
+        return offerRepository.getDeliveredPacks(userId,OfferStatus.ACCEPTED,PackageStatus.DELIVERED);
     }
 
 }
