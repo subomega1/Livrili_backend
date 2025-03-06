@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -167,7 +168,7 @@ public class ClientPackServiceImpl implements ClientPackService {
                     .filter(o -> !o.getId().equals(offerId)) // Exclude the accepted offer
                     .toList();
 
-            otherOffers.forEach(o -> o.setStatus(OfferStatus.DECLINED));
+            otherOffers.forEach(o -> o.setStatus(OfferStatus.DISPOSED));
             offerRepository.saveAll(otherOffers); // Save all declined offers
 
             // Update package status to approved
@@ -182,6 +183,14 @@ public class ClientPackServiceImpl implements ClientPackService {
             offerRepository.save(offer);
             return "Offer declined";
         }
+    }
+
+    @Override
+    public List<Pack> getApprovedPacks(UUID userId) {
+        if (userId == null || !clientRepository.existsById(userId)) {
+            throw new IllegalArgumentException("Client not found");
+        }
+        return packRepository.getApprovedPacksByClientId(userId,PackageStatus.APPROVED).orElseThrow(()-> new IllegalArgumentException("Pack not found for this client"));
     }
 
 }

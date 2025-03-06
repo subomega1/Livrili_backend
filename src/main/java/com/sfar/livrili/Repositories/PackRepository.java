@@ -2,6 +2,7 @@ package com.sfar.livrili.Repositories;
 
 import com.sfar.livrili.Domains.Entities.Client;
 import com.sfar.livrili.Domains.Entities.Pack;
+import com.sfar.livrili.Domains.Entities.PackageStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,6 +32,10 @@ public interface PackRepository extends JpaRepository<Pack, UUID> {
 
     @Query("select p from  Pack p where p.id =:id")
     Optional<Pack> findPackById(@Param("id") UUID id);
+
+    @Query("SELECT p FROM Pack p WHERE p.status = :status AND p.client.id = :clientId")
+    Optional<List<Pack>> getApprovedPacksByClientId(@Param("clientId") UUID clientId, @Param("status") PackageStatus status);
+
 
 
 

@@ -90,6 +90,9 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         if (offerToUpdate.getStatus() == OfferStatus.ACCEPTED) {
             throw new IllegalStateException("Offer already accepted");
         }
+        if (offerToUpdate.getStatus() == OfferStatus.DISPOSED) {
+            throw new IllegalStateException("Offer already disposed");
+        }
         if (offer.getPrice() != null){
             offerToUpdate.setPrice(offer.getPrice());
         }
@@ -98,6 +101,7 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
 
 
         }
+        offerToUpdate.setStatus(OfferStatus.PENDING);
         return offerRepository.save(offerToUpdate);
     }
 

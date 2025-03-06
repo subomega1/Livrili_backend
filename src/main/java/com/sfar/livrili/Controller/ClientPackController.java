@@ -1,9 +1,11 @@
 package com.sfar.livrili.Controller;
 
+import com.sfar.livrili.Domains.Dto.ApprovedPackDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.OfferDecisionRequest;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackRequestDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackResponseDto;
 import com.sfar.livrili.Domains.Entities.Pack;
+import com.sfar.livrili.Mapper.ApprovedPackMapper;
 import com.sfar.livrili.Mapper.PacksForClientMapper;
 import com.sfar.livrili.Service.ClientPackService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +25,7 @@ public class ClientPackController {
 
     private final ClientPackService clientPackService;
     private final PacksForClientMapper packsForClientMapper;
+    private final ApprovedPackMapper approvedPackMapper;
 
     @PostMapping
     public ResponseEntity<Pack> addPack(@RequestBody PackRequestDto packRequestDto , HttpServletRequest httpServletRequest) {
@@ -53,6 +56,14 @@ public class ClientPackController {
     public ResponseEntity<String> applyDecision(@PathVariable UUID id, HttpServletRequest httpServletRequest, @RequestBody OfferDecisionRequest offerDecisionRequest) {
         UUID clientId = (UUID) httpServletRequest.getAttribute("userId");
         return  new ResponseEntity<>(clientPackService.approvePackOrDeclineOffer(clientId,id,offerDecisionRequest), HttpStatus.OK);
+    }
+
+    @GetMapping("/approved")
+    public ResponseEntity<List<ApprovedPackDto>> getApprovedPacks(HttpServletRequest httpServletRequest) {
+        UUID uuid = (UUID) httpServletRequest.getAttribute("userId");
+        List<Pack> packs = clientPackService.getApprovedPacks(uuid);
+        List<ApprovedPackDto> approvedPacks = packs.stream().map(approvedPackMapper::toApprovedPackDto).toList();
+        return new ResponseEntity<>(approvedPacks, HttpStatus.OK);
     }
 
 }
