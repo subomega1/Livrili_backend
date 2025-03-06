@@ -190,7 +190,15 @@ public class ClientPackServiceImpl implements ClientPackService {
         if (userId == null || !clientRepository.existsById(userId)) {
             throw new IllegalArgumentException("Client not found");
         }
-        return packRepository.getApprovedPacksByClientId(userId,PackageStatus.APPROVED).orElseThrow(()-> new IllegalArgumentException("Pack not found for this client"));
+        return packRepository.getApprovedPacksByClientId(userId,PackageStatus.APPROVED).orElse(new ArrayList<>());
+    }
+
+    @Override
+    public List<Pack> getDeliveredPacks(UUID userId) {
+        if (userId == null || !clientRepository.existsById(userId)) {
+            throw new IllegalArgumentException("Client not found");
+        }
+        return packRepository.getApprovedPacksByClientId(userId,PackageStatus.DELIVERED).orElse(new ArrayList<>());
     }
 
 }

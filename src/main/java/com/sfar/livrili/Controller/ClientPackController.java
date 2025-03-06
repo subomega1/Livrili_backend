@@ -65,5 +65,12 @@ public class ClientPackController {
         List<ApprovedPackDto> approvedPacks = packs.stream().map(approvedPackMapper::toApprovedPackDto).toList();
         return new ResponseEntity<>(approvedPacks, HttpStatus.OK);
     }
+    @GetMapping("/delivered")
+    public ResponseEntity<List<ApprovedPackDto>> getDeliveredPacks(HttpServletRequest httpServletRequest) {
+        UUID uuid = (UUID) httpServletRequest.getAttribute("userId");
+        List<Pack> packs = clientPackService.getDeliveredPacks(uuid);
+        List<ApprovedPackDto> approvedPacks = packs.stream().map(approvedPackMapper::toApprovedPackDto).toList();
+        return new ResponseEntity<>(approvedPacks, HttpStatus.OK);
+    }
 
 }

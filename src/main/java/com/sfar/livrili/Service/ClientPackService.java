@@ -17,4 +17,5 @@ public interface ClientPackService {
      void deletePack(UUID userId, UUID packId);
      String approvePackOrDeclineOffer(UUID userId, UUID offerId , OfferDecisionRequest offerDecisionRequest);
      List<Pack> getApprovedPacks(UUID userId);
+     List<Pack>getDeliveredPacks(UUID userId);
 }
