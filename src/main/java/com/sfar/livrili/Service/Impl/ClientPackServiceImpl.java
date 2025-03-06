@@ -1,12 +1,12 @@
 package com.sfar.livrili.Service.Impl;
 
-import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.OfferClientDto;
+
+import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.OfferDecisionRequest;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackRequestDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackResponseDto;
-import com.sfar.livrili.Domains.Entities.Client;
-import com.sfar.livrili.Domains.Entities.Pack;
-import com.sfar.livrili.Domains.Entities.PackageStatus;
+import com.sfar.livrili.Domains.Entities.*;
 import com.sfar.livrili.Repositories.ClientRepository;
+import com.sfar.livrili.Repositories.OfferRepository;
 import com.sfar.livrili.Repositories.PackRepository;
 import com.sfar.livrili.Service.ClientPackService;
 import jakarta.transaction.Transactional;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,8 +22,10 @@ import java.util.stream.Collectors;
 public class ClientPackServiceImpl implements ClientPackService {
     private final ClientRepository clientRepository;
     private final PackRepository packRepository;
+    private final OfferRepository offerRepository;
+
     @Override
-    public Pack CreatePackForClient(UUID userId, PackRequestDto packRequest) {
+    public Pack createPackForClient(UUID userId, PackRequestDto packRequest) {
 
         Client client = clientRepository.findById(userId).orElseThrow(()-> new RuntimeException("Client not found"));
         if (packRequest.getPickUpLocation() == null){
@@ -39,9 +40,7 @@ public class ClientPackServiceImpl implements ClientPackService {
                 .status(PackageStatus.PENDING)
                 .build();
 
-        Pack savedPack = packRepository.save(newPack);
-
-        return savedPack;
+        return packRepository.save(newPack);
 
 
 
@@ -49,12 +48,23 @@ public class ClientPackServiceImpl implements ClientPackService {
 
 
     @Override
-    public List<Pack> GetAllPacks(UUID userId) {
+    public List<Pack> getAllPacks(UUID userId) {
         if (userId == null || !clientRepository.existsById(userId)) {
             throw new IllegalArgumentException("Client not found");
         }
-        return packRepository.findAllByClientId(userId);
+
+        List<Pack> packs = packRepository.findAllByClientId(userId);
+
+        packs.forEach(pack -> {
+            if (pack.getStatus().equals(PackageStatus.APPROVED)) {
+                // Keep only the accepted offers in the response but don't modify the entity
+                pack.getOffers().removeIf(offer -> !offer.getStatus().equals(OfferStatus.ACCEPTED));
+            }
+        });
+
+        return packs;
     }
+
 
     @Override
     public PackResponseDto modifyPack(UUID userId, PackRequestDto updatedPack,UUID packId) {
@@ -111,4 +121,67 @@ public class ClientPackServiceImpl implements ClientPackService {
 
 
     }
+    @Transactional
+    @Override
+    public String approvePackOrDeclineOffer(UUID userId, UUID offerId, OfferDecisionRequest offerDecisionRequest) {
+        if (userId == null || !clientRepository.existsById(userId)) {
+            throw new IllegalArgumentException("Client not found");
+        }
+
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new IllegalArgumentException("Offer not found"));
+
+        if (!offer.getPack().getClient().getId().equals(userId)) {
+            throw new IllegalArgumentException("User doesn't have this offer to approve");
+        }
+
+        if (offer.getPack().getStatus().equals(PackageStatus.APPROVED)) {
+            throw new IllegalArgumentException("Pack already approved");
+        }
+
+        if (offer.getPack().getStatus().equals(PackageStatus.DELIVERED)) {
+            throw new IllegalArgumentException("Pack already delivered");
+        }
+
+        if (offer.getStatus().equals(OfferStatus.DECLINED)) {
+            throw new IllegalArgumentException("The offer is already declined");
+        }
+
+        if (offer.getStatus().equals(OfferStatus.ACCEPTED)) {
+            throw new IllegalArgumentException("The offer is already accepted");
+        }
+
+        if (offerDecisionRequest.getStatus() == null) {
+            throw new IllegalArgumentException("Offer decision request status is null");
+        }
+
+        Pack pack = packRepository.findPackById(offer.getPack().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Pack not found"));
+
+        if (offerDecisionRequest.getStatus().equals(OfferStatus.ACCEPTED)) {
+            // Accept the selected offer
+            offer.setStatus(OfferStatus.ACCEPTED);
+
+            // Decline all other offers for the same package
+            List<Offer> otherOffers = pack.getOffers().stream()
+                    .filter(o -> !o.getId().equals(offerId)) // Exclude the accepted offer
+                    .toList();
+
+            otherOffers.forEach(o -> o.setStatus(OfferStatus.DECLINED));
+            offerRepository.saveAll(otherOffers); // Save all declined offers
+
+            // Update package status to approved
+            pack.setStatus(PackageStatus.APPROVED);
+            offerRepository.save(offer); // Save the accepted offer
+            packRepository.save(pack);
+
+            return "Offer approved and other offers declined";
+        } else {
+            // Just decline the selected offer
+            offer.setStatus(OfferStatus.DECLINED);
+            offerRepository.save(offer);
+            return "Offer declined";
+        }
+    }
+
 }

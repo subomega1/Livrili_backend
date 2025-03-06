@@ -1,5 +1,6 @@
 package com.sfar.livrili.Controller;
 
+import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.OfferDecisionRequest;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackRequestDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackResponseDto;
 import com.sfar.livrili.Domains.Entities.Pack;
@@ -26,12 +27,12 @@ public class ClientPackController {
     @PostMapping
     public ResponseEntity<Pack> addPack(@RequestBody PackRequestDto packRequestDto , HttpServletRequest httpServletRequest) {
         UUID uuid = (UUID) httpServletRequest.getAttribute("userId");
-        return new  ResponseEntity<>(clientPackService.CreatePackForClient(uuid, packRequestDto),HttpStatus.CREATED);
+        return new  ResponseEntity<>(clientPackService.createPackForClient(uuid, packRequestDto),HttpStatus.CREATED);
     }
     @GetMapping
     public ResponseEntity<List<PackResponseDto>> getAllPacks(HttpServletRequest httpServletRequest) {
         UUID uuid = (UUID) httpServletRequest.getAttribute("userId");
-        List<Pack> packs = clientPackService.GetAllPacks(uuid);
+        List<Pack> packs = clientPackService.getAllPacks(uuid);
         List<PackResponseDto> packsResponse = packs.stream().map(packsForClientMapper::ToPackResponseDto).toList();
         return new ResponseEntity<>(packsResponse, HttpStatus.OK);
     }
@@ -47,6 +48,11 @@ public class ClientPackController {
         clientPackService.deletePack(clientId,id);
         return new ResponseEntity<>("the package has been deleted",HttpStatus.NO_CONTENT);
 
+    }
+    @PutMapping("/offer/{id}/decision")
+    public ResponseEntity<String> applyDecision(@PathVariable UUID id, HttpServletRequest httpServletRequest, @RequestBody OfferDecisionRequest offerDecisionRequest) {
+        UUID clientId = (UUID) httpServletRequest.getAttribute("userId");
+        return  new ResponseEntity<>(clientPackService.approvePackOrDeclineOffer(clientId,id,offerDecisionRequest), HttpStatus.OK);
     }
 
 }

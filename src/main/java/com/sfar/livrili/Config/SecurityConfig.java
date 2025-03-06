@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET,"/api/auth").authenticated()
                                 .requestMatchers(HttpMethod.POST,"/api/auth/testAuth").hasAuthority("DELIVERY_PERSON")
                                 .requestMatchers(HttpMethod.POST,"/api/client/packs").hasAuthority("CLIENT")
+                                .requestMatchers(HttpMethod.POST,"/api/client/packs/offer/**").hasAuthority("CLIENT")
                                 .requestMatchers(HttpMethod.GET,"/api/client/packs").hasAuthority("CLIENT")
                                 .requestMatchers(HttpMethod.PUT,"/api/client/packs/**").hasAuthority("CLIENT")
                                 .requestMatchers(HttpMethod.DELETE,"/api/client/packs/**").hasAuthority("CLIENT")

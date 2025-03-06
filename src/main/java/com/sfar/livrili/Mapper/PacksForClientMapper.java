@@ -27,6 +27,7 @@ public class PacksForClientMapper {
                 .status(pack.getStatus())
                 .createdAt(pack.getCreatedAt())
                 .offers(pack.getOffers().stream().map(offer -> OfferClientDto.builder()
+                        .offerId(offer.getId())
                         .deliveryGuyName(offer.getDeliveryPerson().getFirstName() +" " +offer.getDeliveryPerson().getLastName())
                         .deliveryGuyPrice(offer.getPrice())
                         .nbDaysToDeliver(offer.getDaysToGetDelivered())

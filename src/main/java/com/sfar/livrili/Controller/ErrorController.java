@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ErrorController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleException(Exception e) {
-        log.error("Error occured", e);
         ApiErrorResponse error = ApiErrorResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message(e.getMessage()).build();
@@ -58,5 +57,13 @@ public class ErrorController {
         }else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid gender provided.");
         }
+    }
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException e) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
