@@ -30,6 +30,8 @@ public class PacksForClientMapper {
                         .offerId(offer.getId())
                         .deliveryGuyName(offer.getDeliveryPerson().getFirstName() +" " +offer.getDeliveryPerson().getLastName())
                         .deliveryGuyPrice(offer.getPrice())
+                        .deliveryGuyRating(offer.getDeliveryPerson().getRating())
+                        .rattingCount(offer.getDeliveryPerson().getRatingCount())
                         .nbDaysToDeliver(offer.getDaysToGetDelivered())
                         .createdAt(offer.getCreatedAt())
                         .offerStatus(offer.getStatus())

@@ -17,5 +17,7 @@ public class OfferClientDto {
     private Double deliveryGuyPrice;
     private Integer nbDaysToDeliver;
     private OfferStatus offerStatus;
+    private  float deliveryGuyRating;
+    private int rattingCount;
     LocalDateTime createdAt;
 }
