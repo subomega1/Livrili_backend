@@ -37,6 +37,8 @@ public class ApprovedPackDto {
 
     private String deliveryGuyName;
 
+    private Float deliveryGuyRating;
+
     private String deliveryGuyPhone;
 
 

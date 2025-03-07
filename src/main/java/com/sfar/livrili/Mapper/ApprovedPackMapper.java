@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -22,7 +24,12 @@ public class ApprovedPackMapper {
             log.error("Pack is null");
             throw new RuntimeException("Pack is null");
         }
-        Offer acceptedOffer = pack.getOffers().stream().filter(offer -> offer.getStatus() == OfferStatus.ACCEPTED).findFirst().get();
+        Optional<Offer> findAcceptedOffer = pack.getOffers().stream().filter(offer -> offer.getStatus() == OfferStatus.ACCEPTED).findFirst();
+        if (findAcceptedOffer.isEmpty()) {
+            log.error("No accepted offer found");
+            throw new RuntimeException("No accepted offer found");
+        }
+        Offer acceptedOffer = findAcceptedOffer.get();
         OfferResDto offerResDto = offerForDeliveryGuyMapper.toOfferResDto(acceptedOffer);
         return ApprovedPackDto.builder()
                 .packDescription(pack.getDescription())
@@ -36,6 +43,7 @@ public class ApprovedPackMapper {
                 .clientPhone(pack.getClient().getPhone())
                 .deliveryGuyPhone(acceptedOffer.getDeliveryPerson().getPhone())
                 .packStatus(pack.getStatus())
+                .deliveryGuyRating(acceptedOffer.getDeliveryPerson().getRating())
                 .packPickUpLocation(pack.getPickUpLocation())
                 .packDropOffLocation(pack.getDropOffLocation())
                 .build();

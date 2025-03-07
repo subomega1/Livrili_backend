@@ -4,6 +4,7 @@ import com.sfar.livrili.Domains.Dto.ApprovedPackDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.OfferDecisionRequest;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackRequestDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackResponseDto;
+import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.RattingRequestDto;
 import com.sfar.livrili.Domains.Entities.Pack;
 import com.sfar.livrili.Mapper.ApprovedPackMapper;
 import com.sfar.livrili.Mapper.PacksForClientMapper;
@@ -44,6 +45,13 @@ public class ClientPackController {
     public ResponseEntity<PackResponseDto> updatePack(@PathVariable UUID id, @RequestBody PackRequestDto request, HttpServletRequest httpServletRequest) {
         UUID clientId = (UUID) httpServletRequest.getAttribute("userId");
         return new ResponseEntity<>( clientPackService.modifyPack(clientId ,request,id), HttpStatus.OK);
+    }
+    @PutMapping("/{id}/rate")
+    public ResponseEntity<ApprovedPackDto> confirmAndRateDelivered(@PathVariable UUID id, HttpServletRequest httpServletRequest,@RequestBody RattingRequestDto rattingRequestDto) {
+        UUID clientId = (UUID) httpServletRequest.getAttribute("userId");
+        Pack pack = clientPackService.giveRatting(clientId,id,rattingRequestDto);
+        return new ResponseEntity<>(approvedPackMapper.toApprovedPackDto(pack), HttpStatus.OK);
+
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePack(@PathVariable UUID id, HttpServletRequest httpServletRequest) {

@@ -4,6 +4,7 @@ package com.sfar.livrili.Service;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.OfferDecisionRequest;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackRequestDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackResponseDto;
+import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.RattingRequestDto;
 import com.sfar.livrili.Domains.Entities.Pack;
 
 import java.util.List;
@@ -18,4 +19,5 @@ public interface ClientPackService {
      String approvePackOrDeclineOffer(UUID userId, UUID offerId , OfferDecisionRequest offerDecisionRequest);
      List<Pack> getApprovedPacks(UUID userId);
      List<Pack>getDeliveredPacks(UUID userId);
+     Pack giveRatting(UUID userId, UUID packId, RattingRequestDto rattingRequestDto);
 }

@@ -5,5 +5,6 @@ public enum PackageStatus {
     APPROVED,
     OFFERED,
     DELIVERED,
+    RATED
 
 }

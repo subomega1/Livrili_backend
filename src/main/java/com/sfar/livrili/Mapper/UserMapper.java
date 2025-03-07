@@ -37,6 +37,7 @@ public  Object  toUser(UserDtoRequest userDto) {
     }
     DeliveryPerson deliveryPerson = DeliveryPerson.builder()
             .rating(-1)
+            .ratingCount(0)
             .build();
     deliveryPerson.setEmail(userDto.getEmail());
     deliveryPerson.setPhone(userDto.getPhone());

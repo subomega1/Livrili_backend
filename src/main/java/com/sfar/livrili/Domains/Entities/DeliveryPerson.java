@@ -23,6 +23,8 @@ public class DeliveryPerson extends User {
 
 
     private float rating;
+    private int ratingCount;
+
 
     @OneToMany(mappedBy = "deliveryPerson",cascade = CascadeType.ALL ,orphanRemoval = true)
     @JsonManagedReference
