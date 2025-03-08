@@ -5,12 +5,13 @@ import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.OfferDecisionRequest;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackRequestDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackResponseDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.RattingRequestDto;
+import com.sfar.livrili.Domains.Dto.ErrorDto.FieldsError;
+import com.sfar.livrili.Domains.Dto.ErrorDto.IllegalArgs;
 import com.sfar.livrili.Domains.Entities.*;
-import com.sfar.livrili.Repositories.ClientRepository;
-import com.sfar.livrili.Repositories.DeliveryPersonRepository;
-import com.sfar.livrili.Repositories.OfferRepository;
-import com.sfar.livrili.Repositories.PackRepository;
+import com.sfar.livrili.Repositories.*;
 import com.sfar.livrili.Service.ClientPackService;
+import com.sfar.livrili.Validation.PackValidation;
+import com.sfar.livrili.Validation.UserCreationValidation;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,12 @@ public class ClientPackServiceImpl implements ClientPackService {
     @Override
     public Pack createPackForClient(UUID userId, PackRequestDto packRequest) {
 
-        Client client = clientRepository.findById(userId).orElseThrow(()-> new RuntimeException("Client not found"));
+        Client client = clientRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("Client not found"));
+        List<FieldsError> errors = validatePackCreationFields(packRequest);
+        if (!errors.isEmpty()){
+            throw new IllegalArgs("Pack cannot be created",errors);
+        }
+
         if (packRequest.getPickUpLocation() == null){
             packRequest.setPickUpLocation(client.getAddress());
         }
@@ -75,6 +81,9 @@ public class ClientPackServiceImpl implements ClientPackService {
     public PackResponseDto modifyPack(UUID userId, PackRequestDto updatedPack,UUID packId) {
         if (!clientRepository.existsById(userId)){
             throw new IllegalArgumentException("Client not found");
+        }
+        if (updatedPack.getWeight() == null && updatedPack.getDescription() == null && updatedPack.getPickUpLocation() == null && updatedPack.getDropOffLocation() == null){
+            throw new IllegalArgumentException("Pack cannot be updated");
         }
         Pack oldPack = packRepository.findByClientIdAndId(userId, packId).orElseThrow(()-> new IllegalArgumentException("Pack not found"));
         if (oldPack.getStatus().equals(PackageStatus.PENDING)){
@@ -180,11 +189,14 @@ public class ClientPackServiceImpl implements ClientPackService {
             packRepository.save(pack);
 
             return "Offer approved and other offers declined";
-        } else {
+        } else if (offerDecisionRequest.getStatus().equals(OfferStatus.DECLINED)) {
             // Just decline the selected offer
             offer.setStatus(OfferStatus.DECLINED);
             offerRepository.save(offer);
             return "Offer declined";
+        }
+        else {
+            throw new IllegalArgumentException("Invalid offer decision request status");
         }
     }
 
@@ -253,6 +265,43 @@ public class ClientPackServiceImpl implements ClientPackService {
         return packRepository.save(pack);
     }
 
+    private List<FieldsError> validatePackCreationFields(PackRequestDto pack) {
+        List<FieldsError> errors = new ArrayList<>();
+
+        // Validate description
+        if (!UserCreationValidation.notEmpty(pack.getDescription())) {
+            errors.add(new FieldsError("Description", "Description is required"));
+        }else {
+            if (!UserCreationValidation.validateNameFields(pack.getDescription())) {
+                errors.add(new FieldsError("Description", "Description is invalid"));
+            }
+        }
+
+
+        // Validate drop-off location
+        if (!UserCreationValidation.notEmpty(pack.getDropOffLocation())) {
+            errors.add(new FieldsError("DropOffLocation", "DropOffLocation is required"));
+        }else {
+            if (!UserCreationValidation.validateNameFields(pack.getDropOffLocation())) {
+                errors.add(new FieldsError("DropOffLocation", "DropOffLocation is invalid"));
+            }
+        }
+
+
+
+
+        // Validate weight
+        if (pack.getWeight() == null) {
+            errors.add(new FieldsError("Weight", "Weight is required"));
+        }else{
+            if (!PackValidation.isWeightPositive(pack.getWeight())) {
+                errors.add(new FieldsError("Weight", "Weight must be positive"));
+            }
+        }
+
+
+        return errors;
+    }
 
 
 }

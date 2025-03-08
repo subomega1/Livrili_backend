@@ -42,7 +42,7 @@ public class AuthController {
        AuthResponseDto authResponseDto =AuthResponseDto.builder()
                        .token(token)
                         .expiresIn(84600L)
-                        .message("w")
+                        .message("login successful")
                .build();
        return new ResponseEntity<>(authResponseDto, HttpStatus.OK);
 

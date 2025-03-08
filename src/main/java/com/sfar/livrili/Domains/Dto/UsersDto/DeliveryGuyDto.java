@@ -13,4 +13,5 @@ public class DeliveryGuyDto {
     private String lastName;
     private Gender gender;
     private float rating;
+    private int rattingCount;
 }

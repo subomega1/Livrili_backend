@@ -46,6 +46,7 @@ public  Object  toUser(UserDtoRequest userDto) {
     deliveryPerson.setLastName(userDto.getLastName());
     deliveryPerson.setPassword(userDto.getPassword());
     deliveryPerson.setGender(userDto.getGender());
+
     return deliveryPerson;
 
 }
@@ -67,6 +68,7 @@ public  Object  toUser(UserDtoRequest userDto) {
                     .lastName(user.getLastName())
                     .gender(user.getGender())
                     .rating(((DeliveryPerson) user).getRating())
+                    .rattingCount(((DeliveryPerson) user).getRatingCount())
                     .build();
         }
 

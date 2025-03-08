@@ -2,6 +2,8 @@ package com.sfar.livrili.Service.Impl;
 
 
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.OfferRequest;
+import com.sfar.livrili.Domains.Dto.ErrorDto.FieldsError;
+import com.sfar.livrili.Domains.Dto.ErrorDto.IllegalArgs;
 import com.sfar.livrili.Domains.Entities.*;
 import com.sfar.livrili.Repositories.DeliveryPersonRepository;
 import com.sfar.livrili.Repositories.OfferRepository;
@@ -61,6 +63,10 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         if (offerRepository.existsByDeliveryPerson_IdAndId(deliveryPerson.getId(),packId)) {
             throw new IllegalArgumentException("You are already give an offer");
         }
+        List<FieldsError> errors = validateOfferCreation(offer);
+        if (!errors.isEmpty()) {
+            throw new IllegalArgs("Offer cannot be created",errors);
+        }
         Offer newOffer = Offer.builder()
                 .price(offer.getPrice())
                 .pack(pack)
@@ -93,6 +99,9 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         }
         if (offerToUpdate.getStatus() == OfferStatus.DISPOSED) {
             throw new IllegalStateException("Offer already disposed");
+        }
+        if (offer.getPrice() == null && offer.getDayToDeliver()==null){
+            throw new IllegalArgumentException("At least one field must be updated");
         }
         if (offer.getPrice() != null){
             offerToUpdate.setPrice(offer.getPrice());
@@ -189,6 +198,23 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
             throw new IllegalArgumentException("This user doesn't exist");
         }
         return offerRepository.getDeliveredPacks(userId,OfferStatus.ACCEPTED,PackageStatus.DELIVERED);
+    }
+
+    private List<FieldsError> validateOfferCreation(OfferRequest offer) {
+        List<FieldsError> errors = new ArrayList<>();
+        if (offer.getPrice() == null) {
+            errors.add(new FieldsError("price", "Price is required"));
+        }else if (offer.getPrice() < 0) {
+            errors.add(new FieldsError("price", "Price must be positive"));
+        }
+        if (offer.getDayToDeliver() == null) {
+            errors.add(new FieldsError("dayToDeliver", "Day to deliver is required"));
+        }else{
+            if (offer.getDayToDeliver() < 0) {
+                errors.add(new FieldsError("dayToDeliver", "Day to deliver must be positive"));
+            }
+        }
+        return errors;
     }
 
 }

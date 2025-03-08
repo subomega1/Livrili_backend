@@ -21,7 +21,7 @@ public class DeliveryGuyPackResponseDto {
     private String pickUpLocation;
     private String dropOffLocation;
     private PackageStatus status;
-    private String weight;
+    private Float weight;
     private LocalDateTime createdAt;
     private String createdBy;
     private List<OfferInPackDeliveryGuyDto> offersInPack = new ArrayList<>();

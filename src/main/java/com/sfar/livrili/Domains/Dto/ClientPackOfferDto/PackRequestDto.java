@@ -17,7 +17,7 @@ public class PackRequestDto {
     private String description;
 
 
-    private String weight;
+    private Float weight;
 
 
     private String pickUpLocation;

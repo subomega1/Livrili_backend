@@ -31,7 +31,7 @@ public class Pack {
     private String description;
 
     @Column(nullable = false)
-    private String weight;
+    private Float weight;
 
     @Column(nullable = false)
     private String pickUpLocation;

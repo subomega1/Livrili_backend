@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.naming.AuthenticationException;
+
 
 @RestController
 @ControllerAdvice
@@ -35,11 +37,11 @@ public class ErrorController {
     @ExceptionHandler(IllegalArgs.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalArgs(IllegalArgs e) {
         ApiErrorResponse errorResponse = ApiErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
                 .message(e.getMessage())
                 .fields(e.getErrors())
                 .build();
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
@@ -55,7 +57,7 @@ public class ErrorController {
         if (ex.getMessage().contains("Role")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid role provided.");
         }else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid gender provided.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Role provided.");
         }
     }
     @ExceptionHandler(IllegalStateException.class)
@@ -65,5 +67,13 @@ public class ErrorController {
                 .message(e.getMessage())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiErrorResponse> handleAuthenticationException(AuthenticationException e) {
+        ApiErrorResponse error = ApiErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 }

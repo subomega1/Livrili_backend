@@ -22,7 +22,7 @@ public class PackResponseDto {
 
     private String description;
 
-    private String weight;
+    private Float weight;
 
     private String pickUpLocation;
 

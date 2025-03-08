@@ -44,6 +44,7 @@ public class ApprovedPackMapper {
                 .deliveryGuyPhone(acceptedOffer.getDeliveryPerson().getPhone())
                 .packStatus(pack.getStatus())
                 .deliveryGuyRating(acceptedOffer.getDeliveryPerson().getRating())
+                .deliveryGuyRatingCount(acceptedOffer.getDeliveryPerson().getRatingCount())
                 .packPickUpLocation(pack.getPickUpLocation())
                 .packDropOffLocation(pack.getDropOffLocation())
                 .build();

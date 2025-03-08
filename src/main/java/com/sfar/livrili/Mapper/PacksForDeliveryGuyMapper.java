@@ -33,6 +33,7 @@ public class PacksForDeliveryGuyMapper {
                        .price(offer.getPrice())
                        .daysToDeliver(offer.getDaysToGetDelivered())
                        .createdOn(offer.getCreatedAt())
+                       .deliveryGuyRating(offer.getDeliveryPerson().getRating())
 
                        .build()).collect(Collectors.toList()))
                .build();

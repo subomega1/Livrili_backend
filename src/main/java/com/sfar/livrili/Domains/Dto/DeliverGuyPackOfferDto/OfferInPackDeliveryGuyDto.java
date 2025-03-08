@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @Builder
 public class OfferInPackDeliveryGuyDto {
     private  String deliveryGuyName;
+    private  Float deliveryGuyRating;
+    private int deliverGuyRatingCount;
     private Double price;
     private int daysToDeliver;
     LocalDateTime createdOn;
