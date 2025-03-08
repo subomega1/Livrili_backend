@@ -35,26 +35,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/auth/signUp").permitAll()
-                                .requestMatchers(HttpMethod.GET,"/api/auth").authenticated()
-                                .requestMatchers(HttpMethod.POST,"/api/auth/testAuth").hasAuthority("DELIVERY_PERSON")
-                                .requestMatchers(HttpMethod.POST,"/api/client/packs").hasAuthority("CLIENT")
-                                .requestMatchers(HttpMethod.POST,"/api/client/packs/offer/**").hasAuthority("CLIENT")
-                                .requestMatchers(HttpMethod.GET,"/api/client/packs").hasAuthority("CLIENT")
-                                .requestMatchers(HttpMethod.PUT,"/api/client/packs/**").hasAuthority("CLIENT")
-                                .requestMatchers(HttpMethod.DELETE,"/api/client/packs/**").hasAuthority("CLIENT")
-                                .requestMatchers(HttpMethod.GET,"/api/DG/pack/**").hasAuthority("DELIVERY_PERSON")
-                                .requestMatchers(HttpMethod.POST,"/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
-                                .requestMatchers(HttpMethod.PUT,"/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
-                                .requestMatchers(HttpMethod.DELETE,"/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                .authorizeHttpRequests(auth -> auth
+                        // Public Endpoints
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/signUp").permitAll()
 
+                        // Authenticated Endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/auth").authenticated()
 
+                        // Client Permissions
+                        .requestMatchers(HttpMethod.POST, "/api/client/packs", "/api/client/packs/offer/**").hasAuthority("CLIENT")
+                        .requestMatchers(HttpMethod.GET, "/api/client/packs").hasAuthority("CLIENT")
+                        .requestMatchers(HttpMethod.PUT, "/api/client/packs/**").hasAuthority("CLIENT")
+                        .requestMatchers(HttpMethod.DELETE, "/api/client/packs/**").hasAuthority("CLIENT")
 
+                        // Delivery Person Permissions
+                        .requestMatchers(HttpMethod.POST, "/api/auth/testAuth").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.GET, "/api/DG/pack/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.POST, "/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.PUT, "/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.DELETE, "/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                
 
-
-                        .anyRequest().authenticated()
+                .anyRequest().authenticated()
                 )
+
 
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
