@@ -37,7 +37,19 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         // Public Endpoints
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/signUp").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/signUp")
+                                .permitAll()
+                                .requestMatchers( "/api/v1/auth/**",
+                                        "/v2/api-docs",
+                                        "/v3/api-docs",
+                                        "/v3/api-docs/**",
+                                        "/swagger-resources",
+                                        "/swagger-resources/**",
+                                        "/configuration/ui",
+                                        "/configuration/security",
+                                        "/swagger-ui/**",
+                                        "/webjars/**",
+                                        "/swagger-ui.html").permitAll()
 
                         // Authenticated Endpoints
                         .requestMatchers(HttpMethod.GET, "/api/auth").authenticated()
@@ -54,7 +66,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
                         .requestMatchers(HttpMethod.PUT, "/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
                         .requestMatchers(HttpMethod.DELETE, "/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
-                
+
 
                 .anyRequest().authenticated()
                 )
