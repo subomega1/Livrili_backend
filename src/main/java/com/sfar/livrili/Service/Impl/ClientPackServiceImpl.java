@@ -113,7 +113,7 @@ public class ClientPackServiceImpl implements ClientPackService {
             throw new IllegalArgumentException("Client not found");
         }
         String packStatus = packRepository.findPackStatusByClientIdAndPackId(userId, packId).orElseThrow(()-> new IllegalArgumentException("Pack not found"));
-        if (packStatus.equals(PackageStatus.PENDING.name()) || packStatus.equals(PackageStatus.OFFERED.name()) || packStatus.equals(PackageStatus.DELIVERED.name())){
+        if (packStatus.equals(PackageStatus.PENDING.name()) || packStatus.equals(PackageStatus.OFFERED.name()) || packStatus.equals(PackageStatus.RATED.name())){
             try {
                 packRepository.deleteByClientIdAndId(userId, packId);
             }catch (Exception e){
@@ -126,7 +126,6 @@ public class ClientPackServiceImpl implements ClientPackService {
 
 
     }
-    @Transactional
     @Override
     public String approvePackOrDeclineOffer(UUID userId, UUID offerId, OfferDecisionRequest offerDecisionRequest) {
         if (userId == null || !clientRepository.existsById(userId)) {
