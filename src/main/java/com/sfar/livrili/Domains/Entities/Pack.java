@@ -48,8 +48,9 @@ public class Pack {
     @JsonBackReference // This is the "back" reference
     private Client client;
 
-    @OneToMany(mappedBy = "pack",cascade = CascadeType.ALL , orphanRemoval = true)
     @JsonBackReference
+    @OneToMany(mappedBy = "pack",cascade = CascadeType.ALL , orphanRemoval = true)
+
     private List<Offer> offers = new ArrayList<>();
 
 

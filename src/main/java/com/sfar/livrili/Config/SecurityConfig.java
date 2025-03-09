@@ -62,10 +62,10 @@ public class SecurityConfig {
 
                         // Delivery Person Permissions
                         .requestMatchers(HttpMethod.POST, "/api/auth/testAuth").hasAuthority("DELIVERY_PERSON")
-                        .requestMatchers(HttpMethod.GET, "/api/DG/pack/**").hasAuthority("DELIVERY_PERSON")
-                        .requestMatchers(HttpMethod.POST, "/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
-                        .requestMatchers(HttpMethod.PUT, "/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
-                        .requestMatchers(HttpMethod.DELETE, "/api/DG/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.GET, "/api/dg/pack/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.POST, "/api/dg/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.PUT, "/api/dg/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.DELETE, "/api/dg/pack/offer/**").hasAuthority("DELIVERY_PERSON")
 
 
                 .anyRequest().authenticated()

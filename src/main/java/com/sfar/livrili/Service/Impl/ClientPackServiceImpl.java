@@ -39,7 +39,7 @@ public class ClientPackServiceImpl implements ClientPackService {
             throw new IllegalArgs("Pack cannot be created",errors);
         }
 
-        if (packRequest.getPickUpLocation() == null){
+        if (packRequest.getDropOffLocation() == null){
             packRequest.setPickUpLocation(client.getAddress());
         }
         Pack newPack = Pack.builder()
@@ -86,17 +86,45 @@ public class ClientPackServiceImpl implements ClientPackService {
             throw new IllegalArgumentException("Pack cannot be updated");
         }
         Pack oldPack = packRepository.findByClientIdAndId(userId, packId).orElseThrow(()-> new IllegalArgumentException("Pack not found"));
+        List<FieldsError> errors = new ArrayList<>();
         if (oldPack.getStatus().equals(PackageStatus.PENDING)){
             if (updatedPack.getDescription() != null) {
-                oldPack.setDescription(updatedPack.getDescription());
+                if (!UserCreationValidation.validateNameFields(updatedPack.getDescription())) {
+                    errors.add(new FieldsError("Description", "Description is invalid"));
+                };
             }
             if (updatedPack.getWeight() != null) {
+                if (!PackValidation.isWeightPositive(updatedPack.getWeight())) {
+                    errors.add(new FieldsError("Weight", "Weight must be positive"));
+                }
                 oldPack.setWeight(updatedPack.getWeight());
             }
             if (updatedPack.getPickUpLocation() != null) {
+                if (!UserCreationValidation.validateNameFields(updatedPack.getPickUpLocation())) {
+                    errors.add(new FieldsError("PickUpLocation", "PickUpLocation is invalid"));
+                }
                 oldPack.setPickUpLocation(updatedPack.getPickUpLocation());
             }
             if (updatedPack.getDropOffLocation() != null) {
+                if (!UserCreationValidation.validateNameFields(updatedPack.getDropOffLocation())) {
+                    errors.add(new FieldsError("DropOffLocation", "DropOffLocation is invalid"));
+                }
+            }
+            if (!errors.isEmpty()){
+                throw new IllegalArgs("Pack cannot be updated",errors);
+            }
+            if (updatedPack.getDescription() != null){
+                oldPack.setDescription(updatedPack.getDescription());
+            }
+            if (updatedPack.getWeight() != null){
+                oldPack.setWeight(updatedPack.getWeight());
+            }
+
+            if (updatedPack.getPickUpLocation() != null){
+                oldPack.setPickUpLocation(updatedPack.getPickUpLocation());
+            }
+
+            if (updatedPack.getDropOffLocation() != null){
                 oldPack.setDropOffLocation(updatedPack.getDropOffLocation());
             }
             Pack savedPack = packRepository.save(oldPack);
@@ -109,6 +137,12 @@ public class ClientPackServiceImpl implements ClientPackService {
                     .status(oldPack.getStatus())
                     .build();
 
+        }
+        else if (oldPack.getStatus().equals(PackageStatus.APPROVED)){
+            throw new IllegalStateException("Pack cannot be modified while being approved");
+        }
+        else if (oldPack.getStatus().equals(PackageStatus.DELIVERED)){
+            throw new IllegalStateException("Pack cannot be modified while being delivered");
         }
         else {
             throw new IllegalStateException("Pack cannot be modified while having offers");
@@ -124,11 +158,14 @@ public class ClientPackServiceImpl implements ClientPackService {
         String packStatus = packRepository.findPackStatusByClientIdAndPackId(userId, packId).orElseThrow(()-> new IllegalArgumentException("Pack not found"));
         if (packStatus.equals(PackageStatus.PENDING.name()) || packStatus.equals(PackageStatus.OFFERED.name()) || packStatus.equals(PackageStatus.RATED.name())){
             try {
+                offerRepository.deleteByPackId(packId);
                 packRepository.deleteByClientIdAndId(userId, packId);
             }catch (Exception e){
                 throw new IllegalArgumentException("Pack cannot be deleted");
             }
-        }else {
+
+        }
+        else {
             throw new IllegalStateException("Pack cannot be deleted because it's status");
         }
 
@@ -213,7 +250,7 @@ public class ClientPackServiceImpl implements ClientPackService {
         if (userId == null || !clientRepository.existsById(userId)) {
             throw new IllegalArgumentException("Client not found");
         }
-        return packRepository.getApprovedPacksByClientId(userId,PackageStatus.RATED).orElse(new ArrayList<>());
+        return packRepository.getApprovedPacksByClientId(userId,PackageStatus.DELIVERED).orElse(new ArrayList<>());
     }
 
     @Override
@@ -279,11 +316,11 @@ public class ClientPackServiceImpl implements ClientPackService {
 
 
         // Validate drop-off location
-        if (!UserCreationValidation.notEmpty(pack.getDropOffLocation())) {
-            errors.add(new FieldsError("DropOffLocation", "DropOffLocation is required"));
+        if (!UserCreationValidation.notEmpty(pack.getPickUpLocation())) {
+            errors.add(new FieldsError("PickUpLocation", "PickUpLocation is required"));
         }else {
-            if (!UserCreationValidation.validateNameFields(pack.getDropOffLocation())) {
-                errors.add(new FieldsError("DropOffLocation", "DropOffLocation is invalid"));
+            if (!UserCreationValidation.validateNameFields(pack.getPickUpLocation())) {
+                errors.add(new FieldsError("PickUpLocation", "PickUpLocation is invalid"));
             }
         }
 

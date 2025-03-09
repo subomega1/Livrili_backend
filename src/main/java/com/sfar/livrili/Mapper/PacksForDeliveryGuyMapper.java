@@ -21,6 +21,7 @@ public class PacksForDeliveryGuyMapper {
        return
                DeliveryGuyPackResponseDto.builder()
                .id(pack.getId())
+                       .clientName(pack.getClient().getFirstName()+" "+pack.getClient().getLastName())
                .pickUpLocation(pack.getPickUpLocation())
                .description(pack.getDescription())
                .dropOffLocation(pack.getDropOffLocation())

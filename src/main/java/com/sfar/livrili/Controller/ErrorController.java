@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.naming.AuthenticationException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -53,12 +55,14 @@ public class ErrorController {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
     @ExceptionHandler(HttpMessageConversionException.class)
-    public ResponseEntity<String> handleInvalidFormatException(HttpMessageConversionException  ex) {
+    public ResponseEntity<Map<String, String>> handleInvalidFormatException(HttpMessageConversionException  ex) {
         if (ex.getMessage().contains("Role")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid role provided.");
-        }else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Role provided.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<>(Map.of("Role", "Invalid Role ,must be CLIENT or DELIVERY_PERSON.")));
+        }else if (ex.getMessage().contains("Gender")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<>(Map.of("Gender", "Invalid Gender, must be MALE or FEMALE.")));
         }
+        else  {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<>(Map.of("OfferStatus", "Invalid OfferStatus must be ACCEPTED or DECLINED.")));        }
     }
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalStateException(IllegalStateException e) {

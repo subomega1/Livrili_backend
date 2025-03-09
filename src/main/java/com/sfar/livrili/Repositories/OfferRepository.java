@@ -43,7 +43,9 @@ public interface OfferRepository  extends CrudRepository<Offer, UUID> {
     @Query("SELECT o.pack FROM Offer o WHERE o.status = :offerStatus AND o.deliveryPerson.id = :userId and o.pack.status = :packStatus")
     List<Pack> getDeliveredPacks(@Param("userId") UUID userId, @Param("offerStatus") OfferStatus offerStatus , @Param("packStatus") PackageStatus packStatus);
 
-
+    @Modifying
+    @Query("DELETE FROM Offer o WHERE o.pack.id = :packId")
+    void deleteByPackId(@Param("packId") UUID packId);
 
 
 

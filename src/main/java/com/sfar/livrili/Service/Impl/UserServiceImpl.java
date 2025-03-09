@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
 
         List <FieldsError> checkForErrors = ValidateUserRequest(user);
         if (!checkForErrors.isEmpty()) {
+              System.out.println(checkForErrors);
             throw  new IllegalArgs("user cannot be registered", checkForErrors);
         }
         Object userToCheck = userMapper.toUser(user);
@@ -73,58 +74,58 @@ private List <FieldsError> ValidateUserRequest (UserDtoRequest user) {
         List <FieldsError> errors = new ArrayList<>();
         if (!UserCreationValidation.notEmpty(user.getEmail())) {
             errors.add(new FieldsError( "email", "Email is required"));
-        }
-        if (!UserCreationValidation.isEmailValid(user.getEmail())) {
+        }else if (!UserCreationValidation.isEmailValid(user.getEmail())) {
             errors.add(new FieldsError( "email", "Invalid email"));
+
         }
         if (userRepository.existsByEmail(user.getEmail())) {
             errors.add(new FieldsError( "email", "Email already exist"));
         }
-        if (!UserCreationValidation.notEmpty(user.getPhone())) {
+       else if (!UserCreationValidation.notEmpty(user.getPhone())) {
             errors.add(new FieldsError( "phone", "Phone number is required"));
     }
         if (!UserCreationValidation.validatePhone(user.getPhone())) {
             errors.add(new FieldsError( "phone", "Invalid phone number"));
         }
-        if (userRepository.existsByPhone(user.getPhone())) {
+        else if (userRepository.existsByPhone(user.getPhone())) {
             errors.add(new FieldsError("phone", "Phone number already exist"));
         }
         if (!UserCreationValidation.notEmpty(user.getPassword())){
             errors.add(new FieldsError( "password", "Password is required"));
         }
-        if (!UserCreationValidation.passwordRespect(user.getPassword())){
+       else if (!UserCreationValidation.passwordRespect(user.getPassword())){
             errors.add(new FieldsError("password", "Password must be at least 6 characters"));
         }
         if (!UserCreationValidation.notEmpty(user.getConfirmPassword())){
             errors.add(new FieldsError( "confirmPassword", "Confirmed Password is required"));
-        }
+        }else
         if (!UserCreationValidation.passwordMatch(user.getPassword(), user.getConfirmPassword())) {
 
             errors.add(new FieldsError( "password", "Passwords do not match"));
         }
         if (!UserCreationValidation.notEmpty(user.getFirstName())) {
             errors.add(new FieldsError( "firstName", "First name is required"));
-        }
+        }else
         if (!UserCreationValidation.validateNameFields(user.getFirstName())) {
             errors.add(new FieldsError( "firstName", "Invalid first name"));
         }
         if (!UserCreationValidation.notEmpty(user.getLastName())) {
             errors.add(new FieldsError("lastName", "Last name is required"));
-        }
+        }else
         if (!UserCreationValidation.validateNameFields(user.getLastName())) {
             errors.add(new FieldsError( "lastName", "Invalid last name"));
         }
         if (!UserCreationValidation.notEmpty(user.getAddress())) {
             errors.add(new FieldsError( "address", "Address is required"));
-        }
+        }else
         if (!UserCreationValidation.validateNameFields(user.getAddress())) {
             errors.add(new FieldsError( "address", "Invalid address"));
         }
         if (!UserCreationValidation.genderValid(user.getGender())) {
-            errors.add(new FieldsError( "gender", "Gender must be valid"));
+            errors.add(new FieldsError( "gender", "Gender is required"));
         }
         if (!UserCreationValidation.roleValidation(user.getRole())) {
-            errors.add(new FieldsError( "role", "Role must be valid"));
+            errors.add(new FieldsError( "role", "Role must is required"));
         }
         return errors;
 }
