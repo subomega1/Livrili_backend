@@ -15,7 +15,7 @@ services:
       - mysql_data:/var/lib/mysql
 
   spring-boot-app:
-    image: sfar/livrili:latest1.0
+    image: sfarahmedkhalil/livrili:latest
     container_name: spring_boot_app
     ports:
       - "8080:8080"
