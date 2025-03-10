@@ -54,6 +54,7 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = AuthResponseDto.class))),
             @ApiResponse(responseCode = "401", description = "Invalid credentials" ,content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginRequestDto loginRequest) {
         UserDetails userDetails = authenticationService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
@@ -70,8 +71,8 @@ public class AuthController {
     @Operation(summary = "Get User Info", description = "Retrieves the authenticated user's details.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found",
-                    content = @Content(schema = @Schema(implementation = Object.class))),
-            @ApiResponse(responseCode = "401", description = "Bad credentials",content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+                    content = @Content(schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "401", description = "Invalid Token",content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     @GetMapping
     public ResponseEntity<Object> getUser(HttpServletRequest request) {
