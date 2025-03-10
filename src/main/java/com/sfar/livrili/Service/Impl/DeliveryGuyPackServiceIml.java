@@ -103,14 +103,28 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         if (offer.getPrice() == null && offer.getDayToDeliver()==null){
             throw new IllegalArgumentException("At least one field must be updated");
         }
+        List<FieldsError> errors = new ArrayList<>(); // Validate the offer>
+        if (offer.getPrice() != null){
+            if (offer.getPrice() < 0) {
+                errors.add(new FieldsError("price", "Price must be positive"));
+            }
+        }
+        if (offer.getDayToDeliver() != null){
+            if (offer.getDayToDeliver() < 0) {
+                errors.add(new FieldsError("dayToDeliver", "Day to deliver must be positive"));
+            }
+
+        }
+        if (!errors.isEmpty()){
+            throw new IllegalArgs("can't update offer",errors);
+        }
         if (offer.getPrice() != null){
             offerToUpdate.setPrice(offer.getPrice());
         }
         if (offer.getDayToDeliver() != null){
             offerToUpdate.setDaysToGetDelivered(offer.getDayToDeliver());
-
-
         }
+
         offerToUpdate.setStatus(OfferStatus.PENDING);
         return offerRepository.save(offerToUpdate);
     }

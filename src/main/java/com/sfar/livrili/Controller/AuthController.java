@@ -39,6 +39,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User successfully registered",
                     content = @Content(schema = @Schema(implementation = String.class))),
+
             @ApiResponse(responseCode = "422", description = "Invalid request data",content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     @PostMapping("/signUp")
@@ -70,7 +71,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found",
                     content = @Content(schema = @Schema(implementation = Object.class))),
-            @ApiResponse(responseCode = "404", description = "User not found",content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+            @ApiResponse(responseCode = "401", description = "Bad credentials",content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     @GetMapping
     public ResponseEntity<Object> getUser(HttpServletRequest request) {
