@@ -27,6 +27,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/client/pack")
+@CrossOrigin
 @RequiredArgsConstructor
 @Tag(name = "Client Pack Management", description = "Endpoints for managing client packages, including creation, retrieval, updates, and deletion.")
 public class ClientPackController {

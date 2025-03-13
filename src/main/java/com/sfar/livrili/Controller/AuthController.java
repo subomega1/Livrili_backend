@@ -27,6 +27,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Endpoints for user authentication and management") // Swagger Tag
 public class AuthController {
@@ -40,7 +41,7 @@ public class AuthController {
             @ApiResponse(responseCode = "201", description = "User successfully registered",
                     content = @Content(schema = @Schema(implementation = String.class))),
 
-            @ApiResponse(responseCode = "422", description = "Invalid request data",content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+            @ApiResponse(responseCode = "422", description = "Invalid request data", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     @PostMapping("/signUp")
     public ResponseEntity<String> signup(@Valid @RequestBody UserDtoRequest user) {
@@ -52,7 +53,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login successful",
                     content = @Content(schema = @Schema(implementation = AuthResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials" ,content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+            @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
 
     @PostMapping("/login")
@@ -72,7 +73,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found",
                     content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "401", description = "Invalid Token",content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
+            @ApiResponse(responseCode = "401", description = "Invalid Token", content = @Content(schema = @Schema(implementation = ApiErrorResponse.class)))
     })
     @GetMapping
     public ResponseEntity<Object> getUser(HttpServletRequest request) {

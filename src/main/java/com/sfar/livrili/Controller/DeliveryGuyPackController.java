@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/dg/pack")
 @RequiredArgsConstructor
+@CrossOrigin
 @Tag(name = "Delivery Guy Pack Management", description = "Endpoints for managing packages and offers for delivery guys. Includes operations for retrieving, creating, updating, and deleting packages and offers.")
 public class DeliveryGuyPackController {
 
