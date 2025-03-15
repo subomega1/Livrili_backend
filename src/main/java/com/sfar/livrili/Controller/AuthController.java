@@ -27,7 +27,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Endpoints for user authentication and management") // Swagger Tag
 public class AuthController {
