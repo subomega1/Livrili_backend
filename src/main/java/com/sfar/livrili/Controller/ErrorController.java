@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @ControllerAdvice
+@CrossOrigin
 @Slf4j
 public class ErrorController {
     @ExceptionHandler(Exception.class)

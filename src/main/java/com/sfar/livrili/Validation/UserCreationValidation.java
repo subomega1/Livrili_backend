@@ -43,8 +43,8 @@ public class UserCreationValidation {
         return role != null && (role.equals(Role.CLIENT) || role.equals(Role.DELIVERY_PERSON));
     }
     public static boolean validatePhone(String phone) {
-        return phone.length() == 8  ;
-       }
+        return phone.length() == 8;
+    }
     public static boolean validateNameFields(String name) {
         return  name.length() >= 2;
     }
