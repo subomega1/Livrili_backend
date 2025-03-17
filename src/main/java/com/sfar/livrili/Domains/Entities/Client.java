@@ -18,8 +18,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 
 public class Client  extends User{
-    @Column(nullable = false)
-    private String address;
 
     @OneToMany(mappedBy = "client" ,cascade = CascadeType.ALL , orphanRemoval = true)
     @JsonManagedReference // This is the "forward" reference

@@ -24,7 +24,6 @@ public  Object  toUser(UserDtoRequest userDto) {
     }
     if (userDto.getRole().equals(Role.CLIENT)){
         Client client = Client.builder()
-                .address(userDto.getAddress())
                 .build();
         client.setEmail(userDto.getEmail());
         client.setPhone(userDto.getPhone());

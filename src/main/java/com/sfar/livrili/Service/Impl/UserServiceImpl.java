@@ -115,12 +115,6 @@ private List <FieldsError> ValidateUserRequest (UserDtoRequest user) {
         if (!UserCreationValidation.validateNameFields(user.getLastName())) {
             errors.add(new FieldsError( "lastName", "Invalid last name"));
         }
-        if (!UserCreationValidation.notEmpty(user.getAddress())) {
-            errors.add(new FieldsError( "address", "Address is required"));
-        }else
-        if (!UserCreationValidation.validateNameFields(user.getAddress())) {
-            errors.add(new FieldsError( "address", "Invalid address"));
-        }
         if (!UserCreationValidation.genderValid(user.getGender())) {
             errors.add(new FieldsError( "gender", "Gender is required"));
         }

@@ -2,7 +2,6 @@ package com.sfar.livrili.Validation;
 
 import com.sfar.livrili.Domains.Entities.Gender;
 import com.sfar.livrili.Domains.Entities.Role;
-import com.sfar.livrili.Repositories.UserRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
@@ -44,8 +43,8 @@ public class UserCreationValidation {
         return role != null && (role.equals(Role.CLIENT) || role.equals(Role.DELIVERY_PERSON));
     }
     public static boolean validatePhone(String phone) {
-        return phone.length() > 8 && phone.length() < 12;
-    }
+        return phone.length() == 8  ;
+       }
     public static boolean validateNameFields(String name) {
         return  name.length() >= 2;
     }

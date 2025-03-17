@@ -39,9 +39,6 @@ public class ClientPackServiceImpl implements ClientPackService {
             throw new IllegalArgs("Pack cannot be created",errors);
         }
 
-        if (packRequest.getDropOffLocation() == null){
-            packRequest.setPickUpLocation(client.getAddress());
-        }
         Pack newPack = Pack.builder()
                 .client(client)
                 .description(packRequest.getDescription())
@@ -324,6 +321,13 @@ public class ClientPackServiceImpl implements ClientPackService {
             }
         }
 
+        if (!UserCreationValidation.notEmpty(pack.getDropOffLocation())) {
+            errors.add(new FieldsError("DropOffLocation", "DropOffLocation is required"));
+        }else {
+            if (!UserCreationValidation.validateNameFields(pack.getDropOffLocation())) {
+                errors.add(new FieldsError("DropOffLocation", "DropOffLocation is invalid"));
+            }
+        }
 
 
 
