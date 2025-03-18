@@ -1,8 +1,6 @@
 package com.sfar.livrili.Service.Impl;
-
 import com.sfar.livrili.Domains.Dto.ErrorDto.FieldsError;
 import com.sfar.livrili.Domains.Dto.ErrorDto.IllegalArgs;
-import com.sfar.livrili.Domains.Dto.UsersDto.UserDto;
 import com.sfar.livrili.Domains.Dto.AuthDto.UserDtoRequest;
 import com.sfar.livrili.Domains.Entities.Client;
 import com.sfar.livrili.Domains.Entities.DeliveryPerson;
@@ -59,16 +57,6 @@ public class UserServiceImpl implements UserService {
     public User getUser(UUID userId) {
         return userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("User not found"));
 
-    }
-
-    private UserDto convertToDto(User user) {
-        return UserDto.builder()
-                .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .gender(user.getGender())
-                .role(user.getRole())
-                .build();
     }
 private List <FieldsError> ValidateUserRequest (UserDtoRequest user) {
         List <FieldsError> errors = new ArrayList<>();
