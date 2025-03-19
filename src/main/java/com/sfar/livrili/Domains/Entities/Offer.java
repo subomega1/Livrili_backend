@@ -1,6 +1,5 @@
 package com.sfar.livrili.Domains.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,13 +42,12 @@ public class Offer {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_guy_id" , nullable = false)
+    @JoinColumn(name = "delivery_guy_id", nullable = false)
     @JsonManagedReference
     DeliveryPerson deliveryPerson;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pack_id", nullable = false )
+    @JoinColumn(name = "pack_id", nullable = false)
     @JsonManagedReference
     Pack pack;
 
@@ -58,6 +56,7 @@ public class Offer {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
+
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
@@ -70,13 +69,13 @@ public class Offer {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || obj.getClass() != getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null || obj.getClass() != getClass())
+            return false;
         Offer other = (Offer) obj;
-        return Objects.equals(id, other.getId()) && Objects.equals(price, other.getPrice()) && Objects.equals(status, other.getStatus()) ;
+        return Objects.equals(id, other.getId()) && Objects.equals(price, other.getPrice())
+                && Objects.equals(status, other.getStatus());
     }
-
-
-
 
 }

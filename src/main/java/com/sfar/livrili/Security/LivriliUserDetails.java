@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class LivriliUserDetails  implements UserDetails {
+public class LivriliUserDetails implements UserDetails {
 
     private final User user;
 
@@ -32,7 +32,7 @@ public class LivriliUserDetails  implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-       return true;
+        return true;
     }
 
     @Override

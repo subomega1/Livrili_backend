@@ -1,4 +1,5 @@
 package com.sfar.livrili.Domains.Dto;
+
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.OfferResDto;
 import com.sfar.livrili.Domains.Entities.PackageStatus;
 import lombok.Builder;
@@ -8,14 +9,12 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
 @Getter
 @Setter
 @Builder
 
 public class ApprovedPackDto {
     private UUID packId;
-
 
     private String packDescription;
 
@@ -42,7 +41,5 @@ public class ApprovedPackDto {
     private int deliveryGuyRatingCount;
 
     private String deliveryGuyPhone;
-
-
 
 }

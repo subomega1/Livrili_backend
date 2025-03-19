@@ -17,6 +17,4 @@ public class ApiErrorResponse {
     private String message;
     private List<FieldsError> fields;
 
-
-
 }

@@ -1,6 +1,5 @@
 package com.sfar.livrili.Domains.Entities;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,8 +16,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
-
+// @DiscriminatorColumn(name = "user_type", discriminatorType =
+// DiscriminatorType.STRING)
 
 public class User {
 
@@ -26,7 +25,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -38,7 +37,7 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false , unique = true)
+    @Column(nullable = false, unique = true)
     private String phone;
 
     @Enumerated(EnumType.STRING)
@@ -50,32 +49,30 @@ public class User {
     private Role role;
 
     @CreationTimestamp
-    @Column(nullable = false , updatable = false )
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(nullable = false)
-    private LocalDateTime updatedAt ;
-
-
+    private LocalDateTime updatedAt;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         User user = (User) o;
         return Objects.equals(id, user.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id,email,password,firstName,lastName,phone,gender,role);
+        return Objects.hash(id, email, password, firstName, lastName, phone, gender, role);
     }
 
-
-
     @PrePersist
-    protected void onCreate(){
+    protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
@@ -84,8 +81,5 @@ public class User {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-
-
-
 
 }

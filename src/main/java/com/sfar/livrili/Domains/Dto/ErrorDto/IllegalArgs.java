@@ -10,8 +10,9 @@ import java.util.List;
 @Setter
 public class IllegalArgs extends IllegalArgumentException {
 
-     private List<FieldsError> errors = new ArrayList<>();
-    public IllegalArgs(String message , List<FieldsError> errors) {
+    private List<FieldsError> errors = new ArrayList<>();
+
+    public IllegalArgs(String message, List<FieldsError> errors) {
         super(message);
         this.errors = errors;
     }

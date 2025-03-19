@@ -1,6 +1,5 @@
 package com.sfar.livrili.Service.Impl;
 
-
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.OfferDecisionRequest;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackRequestDto;
 import com.sfar.livrili.Domains.Dto.ClientPackOfferDto.PackResponseDto;
@@ -33,10 +32,11 @@ public class ClientPackServiceImpl implements ClientPackService {
     @Override
     public Pack createPackForClient(UUID userId, PackRequestDto packRequest) {
 
-        Client client = clientRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("Client not found"));
+        Client client = clientRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found"));
         List<FieldsError> errors = validatePackCreationFields(packRequest);
-        if (!errors.isEmpty()){
-            throw new IllegalArgs("Pack cannot be created",errors);
+        if (!errors.isEmpty()) {
+            throw new IllegalArgs("Pack cannot be created", errors);
         }
 
         Pack newPack = Pack.builder()
@@ -50,10 +50,7 @@ public class ClientPackServiceImpl implements ClientPackService {
 
         return packRepository.save(newPack);
 
-
-
     }
-
 
     @Override
     public List<Pack> getAllPacks(UUID userId) {
@@ -73,22 +70,24 @@ public class ClientPackServiceImpl implements ClientPackService {
         return packs;
     }
 
-
     @Override
-    public PackResponseDto modifyPack(UUID userId, PackRequestDto updatedPack,UUID packId) {
-        if (!clientRepository.existsById(userId)){
+    public PackResponseDto modifyPack(UUID userId, PackRequestDto updatedPack, UUID packId) {
+        if (!clientRepository.existsById(userId)) {
             throw new IllegalArgumentException("Client not found");
         }
-        if (updatedPack.getWeight() == null && updatedPack.getDescription() == null && updatedPack.getPickUpLocation() == null && updatedPack.getDropOffLocation() == null){
+        if (updatedPack.getWeight() == null && updatedPack.getDescription() == null
+                && updatedPack.getPickUpLocation() == null && updatedPack.getDropOffLocation() == null) {
             throw new IllegalArgumentException("Pack cannot be updated");
         }
-        Pack oldPack = packRepository.findByClientIdAndId(userId, packId).orElseThrow(()-> new IllegalArgumentException("Pack not found"));
+        Pack oldPack = packRepository.findByClientIdAndId(userId, packId)
+                .orElseThrow(() -> new IllegalArgumentException("Pack not found"));
         List<FieldsError> errors = new ArrayList<>();
-        if (oldPack.getStatus().equals(PackageStatus.PENDING)){
+        if (oldPack.getStatus().equals(PackageStatus.PENDING)) {
             if (updatedPack.getDescription() != null) {
                 if (!UserCreationValidation.validateNameFields(updatedPack.getDescription())) {
                     errors.add(new FieldsError("Description", "Description is invalid"));
-                };
+                }
+                ;
             }
             if (updatedPack.getWeight() != null) {
                 if (!PackValidation.isWeightPositive(updatedPack.getWeight())) {
@@ -107,25 +106,25 @@ public class ClientPackServiceImpl implements ClientPackService {
                     errors.add(new FieldsError("DropOffLocation", "DropOffLocation is invalid"));
                 }
             }
-            if (!errors.isEmpty()){
-                throw new IllegalArgs("Pack cannot be updated",errors);
+            if (!errors.isEmpty()) {
+                throw new IllegalArgs("Pack cannot be updated", errors);
             }
-            if (updatedPack.getDescription() != null){
+            if (updatedPack.getDescription() != null) {
                 oldPack.setDescription(updatedPack.getDescription());
             }
-            if (updatedPack.getWeight() != null){
+            if (updatedPack.getWeight() != null) {
                 oldPack.setWeight(updatedPack.getWeight());
             }
 
-            if (updatedPack.getPickUpLocation() != null){
+            if (updatedPack.getPickUpLocation() != null) {
                 oldPack.setPickUpLocation(updatedPack.getPickUpLocation());
             }
 
-            if (updatedPack.getDropOffLocation() != null){
+            if (updatedPack.getDropOffLocation() != null) {
                 oldPack.setDropOffLocation(updatedPack.getDropOffLocation());
             }
             Pack savedPack = packRepository.save(oldPack);
-            return  PackResponseDto.builder()
+            return PackResponseDto.builder()
                     .id(savedPack.getId())
                     .description(oldPack.getDescription())
                     .weight(oldPack.getWeight())
@@ -134,14 +133,11 @@ public class ClientPackServiceImpl implements ClientPackService {
                     .status(oldPack.getStatus())
                     .build();
 
-        }
-        else if (oldPack.getStatus().equals(PackageStatus.APPROVED)){
+        } else if (oldPack.getStatus().equals(PackageStatus.APPROVED)) {
             throw new IllegalStateException("Pack cannot be modified while being approved");
-        }
-        else if (oldPack.getStatus().equals(PackageStatus.DELIVERED)){
+        } else if (oldPack.getStatus().equals(PackageStatus.DELIVERED)) {
             throw new IllegalStateException("Pack cannot be modified while being delivered");
-        }
-        else {
+        } else {
             throw new IllegalStateException("Pack cannot be modified while having offers");
         }
 
@@ -149,26 +145,26 @@ public class ClientPackServiceImpl implements ClientPackService {
 
     @Override
     public void deletePack(UUID userId, UUID packId) {
-        if (!clientRepository.existsById(userId)){
+        if (!clientRepository.existsById(userId)) {
             throw new IllegalArgumentException("Client not found");
         }
-        String packStatus = packRepository.findPackStatusByClientIdAndPackId(userId, packId).orElseThrow(()-> new IllegalArgumentException("Pack not found"));
-        if (packStatus.equals(PackageStatus.PENDING.name()) || packStatus.equals(PackageStatus.OFFERED.name()) || packStatus.equals(PackageStatus.RATED.name())){
+        String packStatus = packRepository.findPackStatusByClientIdAndPackId(userId, packId)
+                .orElseThrow(() -> new IllegalArgumentException("Pack not found"));
+        if (packStatus.equals(PackageStatus.PENDING.name()) || packStatus.equals(PackageStatus.OFFERED.name())
+                || packStatus.equals(PackageStatus.RATED.name())) {
             try {
                 offerRepository.deleteByPackId(packId);
                 packRepository.deleteByClientIdAndId(userId, packId);
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new IllegalArgumentException("Pack cannot be deleted");
             }
 
-        }
-        else {
+        } else {
             throw new IllegalStateException("Pack cannot be deleted because it's status");
         }
 
-
-
     }
+
     @Override
     public String approvePackOrDeclineOffer(UUID userId, UUID offerId, OfferDecisionRequest offerDecisionRequest) {
         if (userId == null || !clientRepository.existsById(userId)) {
@@ -228,8 +224,7 @@ public class ClientPackServiceImpl implements ClientPackService {
             offer.setStatus(OfferStatus.DECLINED);
             offerRepository.save(offer);
             return "Offer declined";
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Invalid offer decision request status");
         }
     }
@@ -239,7 +234,7 @@ public class ClientPackServiceImpl implements ClientPackService {
         if (userId == null || !clientRepository.existsById(userId)) {
             throw new IllegalArgumentException("Client not found");
         }
-        return packRepository.getApprovedPacksByClientId(userId,PackageStatus.APPROVED).orElse(new ArrayList<>());
+        return packRepository.getApprovedPacksByClientId(userId, PackageStatus.APPROVED).orElse(new ArrayList<>());
     }
 
     @Override
@@ -247,7 +242,7 @@ public class ClientPackServiceImpl implements ClientPackService {
         if (userId == null || !clientRepository.existsById(userId)) {
             throw new IllegalArgumentException("Client not found");
         }
-        return packRepository.getApprovedPacksByClientId(userId,PackageStatus.DELIVERED).orElse(new ArrayList<>());
+        return packRepository.getApprovedPacksByClientId(userId, PackageStatus.DELIVERED).orElse(new ArrayList<>());
     }
 
     @Override
@@ -288,7 +283,8 @@ public class ClientPackServiceImpl implements ClientPackService {
                 deliveryPerson.setRatingCount(1);
             } else {
                 deliveryPerson.setRatingCount(deliveryPerson.getRatingCount() + 1);
-                float newRating = (deliveryPerson.getRating() * (deliveryPerson.getRatingCount() - 1) + rattingRequestDto.getRating()) / deliveryPerson.getRatingCount();
+                float newRating = (deliveryPerson.getRating() * (deliveryPerson.getRatingCount() - 1)
+                        + rattingRequestDto.getRating()) / deliveryPerson.getRatingCount();
                 deliveryPerson.setRating(newRating);
             }
 
@@ -305,17 +301,16 @@ public class ClientPackServiceImpl implements ClientPackService {
         // Validate description
         if (!UserCreationValidation.notEmpty(pack.getDescription())) {
             errors.add(new FieldsError("Description", "Description is required"));
-        }else {
+        } else {
             if (!UserCreationValidation.validateNameFields(pack.getDescription())) {
                 errors.add(new FieldsError("Description", "Description is invalid"));
             }
         }
 
-
         // Validate drop-off location
         if (!UserCreationValidation.notEmpty(pack.getPickUpLocation())) {
             errors.add(new FieldsError("PickUpLocation", "PickUpLocation is required"));
-        }else {
+        } else {
             if (!UserCreationValidation.validateNameFields(pack.getPickUpLocation())) {
                 errors.add(new FieldsError("PickUpLocation", "PickUpLocation is invalid"));
             }
@@ -323,26 +318,22 @@ public class ClientPackServiceImpl implements ClientPackService {
 
         if (!UserCreationValidation.notEmpty(pack.getDropOffLocation())) {
             errors.add(new FieldsError("DropOffLocation", "DropOffLocation is required"));
-        }else {
+        } else {
             if (!UserCreationValidation.validateNameFields(pack.getDropOffLocation())) {
                 errors.add(new FieldsError("DropOffLocation", "DropOffLocation is invalid"));
             }
         }
 
-
-
         // Validate weight
         if (pack.getWeight() == null) {
             errors.add(new FieldsError("Weight", "Weight is required"));
-        }else{
+        } else {
             if (!PackValidation.isWeightPositive(pack.getWeight())) {
                 errors.add(new FieldsError("Weight", "Weight must be positive"));
             }
         }
 
-
         return errors;
     }
-
 
 }

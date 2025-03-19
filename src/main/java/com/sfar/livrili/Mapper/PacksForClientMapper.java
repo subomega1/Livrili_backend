@@ -18,7 +18,7 @@ public class PacksForClientMapper {
             log.info("Pack is null");
             throw new RuntimeException("Pack is null");
         }
-        return  PackResponseDto.builder()
+        return PackResponseDto.builder()
                 .id(pack.getId())
                 .description(pack.getDescription())
                 .weight(pack.getWeight())
@@ -28,7 +28,8 @@ public class PacksForClientMapper {
                 .createdAt(pack.getCreatedAt())
                 .offers(pack.getOffers().stream().map(offer -> OfferClientDto.builder()
                         .offerId(offer.getId())
-                        .deliveryGuyName(offer.getDeliveryPerson().getFirstName() +" " +offer.getDeliveryPerson().getLastName())
+                        .deliveryGuyName(offer.getDeliveryPerson().getFirstName() + " "
+                                + offer.getDeliveryPerson().getLastName())
                         .deliveryGuyPrice(offer.getPrice())
                         .deliveryGuyRating(offer.getDeliveryPerson().getRating())
                         .rattingCount(offer.getDeliveryPerson().getRatingCount())

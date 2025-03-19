@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class OfferInPackDeliveryGuyDto {
-    private  String deliveryGuyName;
-    private  Float deliveryGuyRating;
+    private String deliveryGuyName;
+    private Float deliveryGuyRating;
     private int deliverGuyRatingCount;
     private Double price;
     private int daysToDeliver;

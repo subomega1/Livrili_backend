@@ -1,6 +1,5 @@
 package com.sfar.livrili.Config;
 
-
 import com.sfar.livrili.Repositories.UserRepository;
 import com.sfar.livrili.Security.JwtAuthenticationFilter;
 import com.sfar.livrili.Security.LivriliUserDetailsService;
@@ -31,19 +30,21 @@ public class SecurityConfig {
     public JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationService authenticationManagerService) {
         return new JwtAuthenticationFilter(authenticationManagerService);
     }
+
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return new LivriliUserDetailsService(userRepository);
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
+            throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         // Public Endpoints
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/signUp")
+                        .requestMatchers(HttpMethod.POST, "/v1/api/auth/login", "/v1/api/auth/signUp")
                         .permitAll()
-                        .requestMatchers( "/api/v1/auth/**",
+                        .requestMatchers("/api/v1/auth/**",
                                 "/v2/api-docs",
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
@@ -53,44 +54,45 @@ public class SecurityConfig {
                                 "/configuration/security",
                                 "/swagger-ui/**",
                                 "/webjars/**",
-                                "/swagger-ui.html").permitAll()
+                                "/swagger-ui.html")
+                        .permitAll()
 
                         // Authenticated Endpoints
-                        .requestMatchers(HttpMethod.GET, "/api/auth").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/v1/api/auth").authenticated()
 
                         // Client Permissions
-                        .requestMatchers(HttpMethod.POST, "/api/client/packs", "/api/client/packs/offer/**").hasAuthority("CLIENT")
-                        .requestMatchers(HttpMethod.GET, "/api/client/packs").hasAuthority("CLIENT")
-                        .requestMatchers(HttpMethod.PUT, "/api/client/packs/**").hasAuthority("CLIENT")
-                        .requestMatchers(HttpMethod.DELETE, "/api/client/packs/**").hasAuthority("CLIENT")
+                        .requestMatchers(HttpMethod.POST, "/v1/api/client/packs", "/api/client/packs/offer/**")
+                        .hasAuthority("CLIENT")
+                        .requestMatchers(HttpMethod.GET, "/v1/api/client/packs").hasAuthority("CLIENT")
+                        .requestMatchers(HttpMethod.PUT, "/v1/api/client/packs/**").hasAuthority("CLIENT")
+                        .requestMatchers(HttpMethod.DELETE, "/v1/api/client/packs/**").hasAuthority("CLIENT")
 
                         // Delivery Person Permissions
-                        .requestMatchers(HttpMethod.POST, "/api/auth/testAuth").hasAuthority("DELIVERY_PERSON")
-                        .requestMatchers(HttpMethod.GET, "/api/dg/pack/**").hasAuthority("DELIVERY_PERSON")
-                        .requestMatchers(HttpMethod.POST, "/api/dg/pack/offer/**").hasAuthority("DELIVERY_PERSON")
-                        .requestMatchers(HttpMethod.PUT, "/api/dg/pack/offer/**").hasAuthority("DELIVERY_PERSON")
-                        .requestMatchers(HttpMethod.DELETE, "/api/dg/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.GET, "/v1/api/dg/pack/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.POST, "/v1/api/dg/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.PUT, "/v1/api/dg/pack/offer/**").hasAuthority("DELIVERY_PERSON")
+                        .requestMatchers(HttpMethod.DELETE, "/v1/api/dg/pack/offer/**").hasAuthority("DELIVERY_PERSON")
 
-
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
 
                 .cors(cros -> cros.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -104,7 +106,8 @@ public class SecurityConfig {
         // Allow all headers
         configuration.setAllowedHeaders(Arrays.asList("*"));
 
-        // Allow credentials (important if you're using cookies or authorization headers)
+        // Allow credentials (important if you're using cookies or authorization
+        // headers)
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -112,6 +115,5 @@ public class SecurityConfig {
 
         return source;
     }
-
 
 }

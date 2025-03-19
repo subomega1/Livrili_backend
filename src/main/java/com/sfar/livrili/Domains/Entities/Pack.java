@@ -1,6 +1,5 @@
 package com.sfar.livrili.Domains.Entities;
 
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,9 +21,8 @@ import java.util.UUID;
 @Builder
 public class Pack {
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID )
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
@@ -44,16 +42,14 @@ public class Pack {
     private PackageStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false ,name = "client_id")
+    @JoinColumn(nullable = false, name = "client_id")
     @JsonBackReference // This is the "back" reference
     private Client client;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "pack",cascade = CascadeType.ALL , orphanRemoval = true)
+    @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
 
     private List<Offer> offers = new ArrayList<>();
-
-
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
@@ -68,6 +64,7 @@ public class Pack {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
+
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
@@ -80,8 +77,10 @@ public class Pack {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || obj.getClass() != getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null || obj.getClass() != getClass())
+            return false;
         Pack other = (Pack) obj;
         return Objects.equals(id, other.id) && Objects.equals(description, other.description);
     }

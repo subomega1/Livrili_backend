@@ -3,8 +3,6 @@ package com.sfar.livrili;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
-
 @SpringBootApplication
 public class LivriliApplication {
 

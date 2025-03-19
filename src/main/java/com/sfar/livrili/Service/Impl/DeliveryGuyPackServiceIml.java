@@ -1,6 +1,5 @@
 package com.sfar.livrili.Service.Impl;
 
-
 import com.sfar.livrili.Domains.Dto.DeliverGuyPackOfferDto.OfferRequest;
 import com.sfar.livrili.Domains.Dto.ErrorDto.FieldsError;
 import com.sfar.livrili.Domains.Dto.ErrorDto.IllegalArgs;
@@ -17,12 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
-
 
     private final PackRepository packRepository;
     private final OfferRepository offerRepository;
@@ -31,7 +28,8 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
     @Override
     public List<Pack> getPacks(UUID userId) {
         List<Pack> packs = packRepository.findAll().stream()
-                .filter(pack -> pack.getStatus().equals(PackageStatus.PENDING) || pack.getStatus().equals(PackageStatus.OFFERED))
+                .filter(pack -> pack.getStatus().equals(PackageStatus.PENDING)
+                        || pack.getStatus().equals(PackageStatus.OFFERED))
                 .collect(Collectors.toList());
 
         packs.forEach(pack -> {
@@ -45,27 +43,27 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         return packs;
     }
 
-
     @Override
-    public Offer CreateOffer(OfferRequest offer , UUID userId ,UUID packId) {
+    public Offer CreateOffer(OfferRequest offer, UUID userId, UUID packId) {
         if (packId == null) {
             throw new IllegalArgumentException("Pack id cannot be null");
         }
-        Pack pack = packRepository.findById(packId).orElseThrow( () -> new IllegalArgumentException("Pack not found"));
-        DeliveryPerson deliveryPerson = deliveryPersonRepository.findById(userId).orElseThrow( () -> new IllegalArgumentException("Delivery person not found"));
+        Pack pack = packRepository.findById(packId).orElseThrow(() -> new IllegalArgumentException("Pack not found"));
+        DeliveryPerson deliveryPerson = deliveryPersonRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Delivery person not found"));
 
-        if ( pack.getStatus().equals(PackageStatus.DELIVERED)) {
+        if (pack.getStatus().equals(PackageStatus.DELIVERED)) {
             throw new IllegalArgumentException("Pack already delivered");
         }
         if (pack.getStatus() == PackageStatus.APPROVED) {
             throw new IllegalArgumentException("Pack already approved an offer");
         }
-        if (offerRepository.existsByDeliveryPerson_IdAndId(deliveryPerson.getId(),packId)) {
+        if (offerRepository.existsByDeliveryPerson_IdAndId(deliveryPerson.getId(), packId)) {
             throw new IllegalArgumentException("You are already give an offer");
         }
         List<FieldsError> errors = validateOfferCreation(offer);
         if (!errors.isEmpty()) {
-            throw new IllegalArgs("Offer cannot be created",errors);
+            throw new IllegalArgs("Offer cannot be created", errors);
         }
         Offer newOffer = Offer.builder()
                 .price(offer.getPrice())
@@ -78,8 +76,8 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
             pack.setStatus(PackageStatus.OFFERED);
         }
         packRepository.save(pack);
-    offerRepository.save(newOffer);
-    return newOffer;
+        offerRepository.save(newOffer);
+        return newOffer;
     }
 
     @Override
@@ -93,35 +91,36 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         if (!deliveryPersonRepository.existsById(userId)) {
             throw new IllegalArgumentException("User does not exist");
         }
-        Offer offerToUpdate = offerRepository.findOfferByIdAndUserId(userId, offerId).orElseThrow( () -> new IllegalArgumentException("Offer not found"));
+        Offer offerToUpdate = offerRepository.findOfferByIdAndUserId(userId, offerId)
+                .orElseThrow(() -> new IllegalArgumentException("Offer not found"));
         if (offerToUpdate.getStatus() == OfferStatus.ACCEPTED) {
             throw new IllegalStateException("Offer already accepted");
         }
         if (offerToUpdate.getStatus() == OfferStatus.DISPOSED) {
             throw new IllegalStateException("Offer already disposed");
         }
-        if (offer.getPrice() == null && offer.getDayToDeliver()==null){
+        if (offer.getPrice() == null && offer.getDayToDeliver() == null) {
             throw new IllegalArgumentException("At least one field must be updated");
         }
         List<FieldsError> errors = new ArrayList<>(); // Validate the offer>
-        if (offer.getPrice() != null){
+        if (offer.getPrice() != null) {
             if (offer.getPrice() < 0) {
                 errors.add(new FieldsError("price", "Price must be positive"));
             }
         }
-        if (offer.getDayToDeliver() != null){
+        if (offer.getDayToDeliver() != null) {
             if (offer.getDayToDeliver() < 0) {
                 errors.add(new FieldsError("dayToDeliver", "Day to deliver must be positive"));
             }
 
         }
-        if (!errors.isEmpty()){
-            throw new IllegalArgs("can't update offer",errors);
+        if (!errors.isEmpty()) {
+            throw new IllegalArgs("can't update offer", errors);
         }
-        if (offer.getPrice() != null){
+        if (offer.getPrice() != null) {
             offerToUpdate.setPrice(offer.getPrice());
         }
-        if (offer.getDayToDeliver() != null){
+        if (offer.getDayToDeliver() != null) {
             offerToUpdate.setDaysToGetDelivered(offer.getDayToDeliver());
         }
 
@@ -175,9 +174,8 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
             throw new IllegalArgumentException("This user doesn't exist");
         }
 
-        List<Pack> approvedPacks = packRepository.getApprovedPacks(PackageStatus.APPROVED).orElseThrow((() -> new IllegalArgumentException("No approved packs")));
-
-
+        List<Pack> approvedPacks = packRepository.getApprovedPacks(PackageStatus.APPROVED)
+                .orElseThrow((() -> new IllegalArgumentException("No approved packs")));
 
         return approvedPacks.stream()
                 .filter(pack -> pack.getOffers().stream()
@@ -191,18 +189,19 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         if (userId == null || !deliveryPersonRepository.existsById(userId)) {
             throw new IllegalArgumentException("This user doesn't exist");
         }
-        if (packId == null ) {
+        if (packId == null) {
             throw new IllegalArgumentException("This packId cannot be null");
         }
-        UUID deliveryGuyPackToDeliverId = offerRepository.PackToDeliver(userId,packId,OfferStatus.ACCEPTED,PackageStatus.APPROVED).orElseThrow( () -> new IllegalArgumentException("No approved pack for this User"));
+        UUID deliveryGuyPackToDeliverId = offerRepository
+                .PackToDeliver(userId, packId, OfferStatus.ACCEPTED, PackageStatus.APPROVED)
+                .orElseThrow(() -> new IllegalArgumentException("No approved pack for this User"));
         if (!deliveryGuyPackToDeliverId.equals(packId)) {
             throw new IllegalArgumentException("This User do not have this approved pack");
         }
-        Pack deliveredPack = packRepository.findPackById(packId).orElseThrow( () -> new IllegalArgumentException("Pack not found"));
+        Pack deliveredPack = packRepository.findPackById(packId)
+                .orElseThrow(() -> new IllegalArgumentException("Pack not found"));
         deliveredPack.setStatus(PackageStatus.DELIVERED);
         return packRepository.save(deliveredPack);
-
-
 
     }
 
@@ -211,19 +210,19 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
         if (userId == null || !deliveryPersonRepository.existsById(userId)) {
             throw new IllegalArgumentException("This user doesn't exist");
         }
-        return offerRepository.getDeliveredPacks(userId,OfferStatus.ACCEPTED,PackageStatus.DELIVERED);
+        return offerRepository.getDeliveredPacks(userId, OfferStatus.ACCEPTED, PackageStatus.DELIVERED);
     }
 
     private List<FieldsError> validateOfferCreation(OfferRequest offer) {
         List<FieldsError> errors = new ArrayList<>();
         if (offer.getPrice() == null) {
             errors.add(new FieldsError("price", "Price is required"));
-        }else if (offer.getPrice() < 0) {
+        } else if (offer.getPrice() < 0) {
             errors.add(new FieldsError("price", "Price must be positive"));
         }
         if (offer.getDayToDeliver() == null) {
             errors.add(new FieldsError("dayToDeliver", "Day to deliver is required"));
-        }else{
+        } else {
             if (offer.getDayToDeliver() < 0) {
                 errors.add(new FieldsError("dayToDeliver", "Day to deliver must be positive"));
             }

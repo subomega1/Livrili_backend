@@ -27,7 +27,4 @@ public class DeliveryGuyPackResponseDto {
     private String createdBy;
     private List<OfferInPackDeliveryGuyDto> offersInPack = new ArrayList<>();
 
-
-
 }
-

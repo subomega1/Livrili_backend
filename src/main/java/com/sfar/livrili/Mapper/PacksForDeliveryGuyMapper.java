@@ -13,32 +13,32 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Slf4j
 public class PacksForDeliveryGuyMapper {
-   public DeliveryGuyPackResponseDto DeliveryGuyPackResponseDto(Pack pack) {
-       if (pack == null) {
-           log.error("Pack is null");
-           throw new RuntimeException("Pack is null");
-       }
-       return
-               DeliveryGuyPackResponseDto.builder()
-               .id(pack.getId())
-                       .clientName(pack.getClient().getFirstName()+" "+pack.getClient().getLastName())
-               .pickUpLocation(pack.getPickUpLocation())
-               .description(pack.getDescription())
-               .dropOffLocation(pack.getDropOffLocation())
-               .weight(pack.getWeight())
-               .status(pack.getStatus())
-                       .createdAt(pack.getCreatedAt())
-               .createdBy(pack.getClient().getFirstName()+" " +pack.getClient().getLastName())
-               .offersInPack(pack.getOffers().stream().map(offer -> OfferInPackDeliveryGuyDto.builder()
-                       .deliveryGuyName(offer.getDeliveryPerson().getFirstName()+" "+offer.getDeliveryPerson().getLastName())
-                       .price(offer.getPrice())
-                       .daysToDeliver(offer.getDaysToGetDelivered())
-                       .createdOn(offer.getCreatedAt())
-                       .deliveryGuyRating(offer.getDeliveryPerson().getRating())
+        public DeliveryGuyPackResponseDto DeliveryGuyPackResponseDto(Pack pack) {
+                if (pack == null) {
+                        log.error("Pack is null");
+                        throw new RuntimeException("Pack is null");
+                }
+                return DeliveryGuyPackResponseDto.builder()
+                                .id(pack.getId())
+                                .clientName(pack.getClient().getFirstName() + " " + pack.getClient().getLastName())
+                                .pickUpLocation(pack.getPickUpLocation())
+                                .description(pack.getDescription())
+                                .dropOffLocation(pack.getDropOffLocation())
+                                .weight(pack.getWeight())
+                                .status(pack.getStatus())
+                                .createdAt(pack.getCreatedAt())
+                                .createdBy(pack.getClient().getFirstName() + " " + pack.getClient().getLastName())
+                                .offersInPack(pack.getOffers().stream().map(offer -> OfferInPackDeliveryGuyDto.builder()
+                                                .deliveryGuyName(offer.getDeliveryPerson().getFirstName() + " "
+                                                                + offer.getDeliveryPerson().getLastName())
+                                                .price(offer.getPrice())
+                                                .daysToDeliver(offer.getDaysToGetDelivered())
+                                                .createdOn(offer.getCreatedAt())
+                                                .deliveryGuyRating(offer.getDeliveryPerson().getRating())
 
-                       .build()).collect(Collectors.toList()))
-               .build();
+                                                .build()).collect(Collectors.toList()))
+                                .build();
 
-   }
+        }
 
 }

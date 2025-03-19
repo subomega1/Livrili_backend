@@ -11,5 +11,4 @@ public interface UserService {
 
     User getUser(UUID userId);
 
-
 }

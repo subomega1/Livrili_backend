@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public  class FieldsError {
+public class FieldsError {
     private String field;
     private String message;
 }

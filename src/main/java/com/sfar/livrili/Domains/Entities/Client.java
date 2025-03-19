@@ -6,24 +6,21 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-//@DiscriminatorValue("CLIENT")
+// @DiscriminatorValue("CLIENT")
 @Table(name = "clients")
 @EqualsAndHashCode(callSuper = true)
 
-public class Client  extends User{
+public class Client extends User {
 
-    @OneToMany(mappedBy = "client" ,cascade = CascadeType.ALL , orphanRemoval = true)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference // This is the "forward" reference
 
     private List<Pack> packList = new ArrayList<>();
-
-
 
 }

@@ -10,11 +10,18 @@ import java.util.UUID;
 public interface DeliveryGuyPackService {
 
     List<Pack> getPacks(UUID userId);
-    Offer CreateOffer(OfferRequest offer, UUID userId,UUID packId);
-    Offer UpdateOffer(OfferRequest offer, UUID userId,UUID offerId);
+
+    Offer CreateOffer(OfferRequest offer, UUID userId, UUID packId);
+
+    Offer UpdateOffer(OfferRequest offer, UUID userId, UUID offerId);
+
     List<Offer> getOffers(UUID userId);
-    void deleteOffer(UUID userId,UUID offerId );
+
+    void deleteOffer(UUID userId, UUID offerId);
+
     List<Pack> packsToDeliver(UUID userId);
-    Pack deliverPack(UUID userId,UUID packId);
+
+    Pack deliverPack(UUID userId, UUID packId);
+
     List<Pack> deliveredPacks(UUID userId);
 }

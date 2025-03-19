@@ -7,8 +7,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
-
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,6 +14,5 @@ import java.util.UUID;
 public class GetOfferRes extends OfferResDto {
 
     private UUID packId;
-
 
 }

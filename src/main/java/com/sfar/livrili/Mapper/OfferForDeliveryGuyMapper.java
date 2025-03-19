@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class OfferForDeliveryGuyMapper {
 
     public OfferResDto toOfferResDto(Offer offer) {
-        if(offer == null) {
+        if (offer == null) {
             log.error("offer is null");
             throw new RuntimeException("offer is null");
         }
@@ -25,8 +25,9 @@ public class OfferForDeliveryGuyMapper {
                 .dayToDeliver(offer.getDaysToGetDelivered())
                 .build();
     }
+
     public GetOfferRes toGetOfferRes(Offer offer) {
-        if(offer == null) {
+        if (offer == null) {
             log.error("offer is null");
             throw new RuntimeException("offer is null");
         }
@@ -35,8 +36,8 @@ public class OfferForDeliveryGuyMapper {
                 .price(offer.getPrice())
                 .status(offer.getStatus())
                 .createdAt(offer.getCreatedAt())
-                .dayToDeliver(offer.getDaysToGetDelivered())  // Assuming offerId is the same as offer.getId()
-                .packId(offer.getPack().getId())  // Assuming pack has an ID
+                .dayToDeliver(offer.getDaysToGetDelivered()) // Assuming offerId is the same as offer.getId()
+                .packId(offer.getPack().getId()) // Assuming pack has an ID
                 .build();
     }
 }
