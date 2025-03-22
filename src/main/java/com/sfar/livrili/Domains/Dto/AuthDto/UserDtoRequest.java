@@ -42,7 +42,6 @@ public class UserDtoRequest {
     @NotNull(message = "Gender is mandatory")
     private Gender gender;
 
-    private String address;
 
     @NotNull(message = "Role is mandatory")
     private Role role;
