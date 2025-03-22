@@ -59,12 +59,14 @@ public class UserMapper {
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())
                     .gender(user.getGender())
+                    .role(user.getRole())
                     .build();
         } else {
             return DeliveryGuyDto.builder()
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())
                     .gender(user.getGender())
+                    .role(user.getRole())
                     .rating(((DeliveryPerson) user).getRating())
                     .rattingCount(((DeliveryPerson) user).getRatingCount())
                     .build();
