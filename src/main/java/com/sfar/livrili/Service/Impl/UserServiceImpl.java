@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         if (!UserCreationValidation.notEmpty(user.getPassword())) {
             errors.add(new FieldsError("password", "Password is required"));
         } else if (!UserCreationValidation.passwordRespect(user.getPassword())) {
-            errors.add(new FieldsError("password", "Password must be at least 6 characters"));
+            errors.add(new FieldsError("password", "Password must be at least 8 characters"));
         }
         if (!UserCreationValidation.notEmpty(user.getConfirmPassword())) {
             errors.add(new FieldsError("confirmPassword", "Confirmed Password is required"));

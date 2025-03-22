@@ -26,7 +26,7 @@ public class UserCreationValidation {
     }
 
     public static boolean passwordRespect(String password) {
-        return password.length() >= 6;
+        return password.length() >= 8;
     }
 
     public static boolean passwordMatch(String password, String confirmPassword) {
