@@ -65,6 +65,7 @@ public class AuthController {
                                 .build();
                 return new ResponseEntity<>(authResponseDto, HttpStatus.OK);
         }
+         
 
         @Operation(summary = "Get User Info", description = "Retrieves the authenticated user's details.")
         @ApiResponses(value = {

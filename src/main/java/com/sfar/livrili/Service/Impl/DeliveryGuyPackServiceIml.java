@@ -151,6 +151,9 @@ public class DeliveryGuyPackServiceIml implements DeliveryGuyPackService {
 
         Offer offerToDelete = offerRepository.findOfferByIdAndUserId(userId, offerId)
                 .orElseThrow(() -> new IllegalArgumentException("Offer for this User not found"));
+        if (offerToDelete.getStatus().equals(OfferStatus.ACCEPTED)) {
+            throw new IllegalArgumentException("the offer is already accepted");
+        }
 
         UUID packId = offerToDelete.getPack().getId();
 
