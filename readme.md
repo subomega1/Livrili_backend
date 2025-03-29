@@ -245,4 +245,3 @@ Livrili employs a monolithic architecture with a Spring Boot backend, MySQL data
 ## 10. Contact
 - Developer: Sfar Ahmed Khalil
 - Email: sfarahmed32@gmail.com
-- GitHub: [https://github.com/subomega1](https://github.com/subomega1)
