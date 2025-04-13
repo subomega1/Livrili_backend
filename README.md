@@ -74,7 +74,7 @@ Livrili employs a monolithic architecture with a Spring Boot backend, MySQL data
 - Lombok, JJWT, Springdoc OpenAPI
 
 ## Installation
-1. Clone the repository: `git clone <repository-url>`
+1. Clone the repository: `git clone https://github.com/subomega1/Livrili_backend`
 2. Navigate to the backend directory: `cd backend`
 3. Build the project: `mvn clean install`
 4. Run the application: `mvn spring-boot:run`
