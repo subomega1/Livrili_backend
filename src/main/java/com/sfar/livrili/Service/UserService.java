@@ -1,5 +1,6 @@
 package com.sfar.livrili.Service;
 
+import com.sfar.livrili.Domains.Dto.AuthDto.ModifyUserRequestDto;
 import com.sfar.livrili.Domains.Dto.AuthDto.UserDtoRequest;
 import com.sfar.livrili.Domains.Entities.User;
 
@@ -10,5 +11,7 @@ public interface UserService {
     String addUser(UserDtoRequest user);
 
     User getUser(UUID userId);
+
+    User modifyUser(ModifyUserRequestDto user, UUID userId);
 
 }

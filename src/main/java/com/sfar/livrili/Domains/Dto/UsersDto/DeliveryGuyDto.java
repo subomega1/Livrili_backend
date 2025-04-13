@@ -17,4 +17,6 @@ public class DeliveryGuyDto {
     private float rating;
     private int rattingCount;
     private Role role;
+    private String phone;
+    private String email;
 }

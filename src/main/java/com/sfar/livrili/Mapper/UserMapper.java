@@ -54,12 +54,24 @@ public class UserMapper {
             log.error("user is null");
             throw new RuntimeException("user is null");
         }
+        String userPhoneString = user.getPhone();
+        int length = userPhoneString.length();
+        userPhoneString = "*".repeat(length) + userPhoneString.substring(length - 4);
+
+        String userEmail = user.getEmail();
+        int atIndex = userEmail.indexOf('@');
+        String localPart = userEmail.substring(0, atIndex);
+        String domain = userEmail.substring(atIndex);
+        String maskedLocalPart = "*".repeat(localPart.length() - 3) + localPart.substring(localPart.length() - 3);
+        String maskedEmail = maskedLocalPart + domain;
         if (user.getRole().equals(Role.CLIENT)) {
             return ClientDto.builder()
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())
                     .gender(user.getGender())
                     .role(user.getRole())
+                    .phone(userPhoneString)
+                    .email(maskedEmail)
                     .build();
         } else {
             return DeliveryGuyDto.builder()
@@ -69,6 +81,8 @@ public class UserMapper {
                     .role(user.getRole())
                     .rating(((DeliveryPerson) user).getRating())
                     .rattingCount(((DeliveryPerson) user).getRatingCount())
+                    .phone(userPhoneString)
+                    .email(maskedEmail)
                     .build();
         }
 
